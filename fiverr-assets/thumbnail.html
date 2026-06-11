@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>Fiverr Thumbnail</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1280px;
+    height: 720px;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #080810;
+    color: white;
+  }
+
+  /* Background gradients */
+  .bg {
+    position: absolute;
+    inset: 0;
+  }
+  .bg::before {
+    content: '';
+    position: absolute;
+    top: -100px; right: -100px;
+    width: 500px; height: 500px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(109,40,217,0.25) 0%, transparent 70%);
+  }
+  .bg::after {
+    content: '';
+    position: absolute;
+    bottom: -100px; left: -100px;
+    width: 500px; height: 500px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(79,70,229,0.2) 0%, transparent 70%);
+  }
+
+  /* Grid noise overlay */
+  .grid-overlay {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  .content {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    height: 100%;
+  }
+
+  /* LEFT SIDE */
+  .left {
+    width: 480px;
+    padding: 56px 48px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 24px;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    border-radius: 100px;
+    background: rgba(109,40,217,0.2);
+    border: 1px solid rgba(139,92,246,0.3);
+    font-size: 12px;
+    font-weight: 600;
+    color: #a78bfa;
+    letter-spacing: 0.5px;
+    width: fit-content;
+  }
+  .badge .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: #a78bfa;
+    animation: pulse 1.5s infinite;
+  }
+
+  .main-title {
+    font-size: 46px;
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -1px;
+  }
+  .main-title .highlight {
+    background: linear-gradient(135deg, #818cf8, #a78bfa, #c084fc);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .subtitle {
+    font-size: 16px;
+    color: rgba(255,255,255,0.5);
+    line-height: 1.6;
+    max-width: 360px;
+  }
+
+  .features {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .feature {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: rgba(255,255,255,0.7);
+    font-weight: 500;
+  }
+  .feature-icon {
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+    flex-shrink: 0;
+  }
+
+  .tech-stack {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .tech-pill {
+    padding: 4px 12px;
+    border-radius: 100px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    font-size: 11px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 0.3px;
+  }
+
+  /* RIGHT SIDE - App mockup */
+  .right {
+    flex: 1;
+    padding: 32px 40px 32px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    justify-content: center;
+  }
+
+  /* Mini sidebar + board mockup */
+  .app-mockup {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    overflow: hidden;
+    display: flex;
+    height: 420px;
+    box-shadow: 0 40px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.05);
+  }
+
+  /* Sidebar mock */
+  .mock-sidebar {
+    width: 140px;
+    background: rgba(10,10,22,0.8);
+    border-right: 1px solid rgba(255,255,255,0.06);
+    padding: 16px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+  .mock-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px;
+    margin-bottom: 12px;
+  }
+  .mock-logo-icon {
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #7c3aed, #4f46e5);
+    flex-shrink: 0;
+  }
+  .mock-logo-text {
+    font-size: 11px;
+    font-weight: 700;
+    color: white;
+  }
+  .mock-nav-label {
+    font-size: 8px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.2);
+    letter-spacing: 1px;
+    padding: 0 8px;
+    margin: 6px 0 3px;
+  }
+  .mock-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 6px 8px;
+    border-radius: 8px;
+    font-size: 10px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.35);
+  }
+  .mock-nav-item.active {
+    background: rgba(99,102,241,0.2);
+    border: 1px solid rgba(99,102,241,0.2);
+    color: #a5b4fc;
+  }
+  .mock-nav-dot {
+    width: 14px; height: 14px;
+    border-radius: 4px;
+    background: currentColor;
+    opacity: 0.4;
+    flex-shrink: 0;
+  }
+
+  /* Board area */
+  .mock-board {
+    flex: 1;
+    padding: 16px;
+    display: flex;
+    gap: 10px;
+    overflow: hidden;
+    background: #080810;
+  }
+
+  .mock-column {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+  }
+  .mock-col-header {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    padding: 5px 10px;
+    border-radius: 8px;
+    text-align: center;
+  }
+  .mock-col-header.todo { background: rgba(148,163,184,0.15); color: #94a3b8; }
+  .mock-col-header.inprog { background: rgba(99,102,241,0.2); color: #818cf8; }
+  .mock-col-header.review { background: rgba(245,158,11,0.15); color: #fbbf24; }
+  .mock-col-header.done { background: rgba(16,185,129,0.15); color: #34d399; }
+
+  .mock-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 8px;
+    padding: 8px 9px;
+  }
+  .mock-card-title {
+    font-size: 8px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.8);
+    margin-bottom: 5px;
+    line-height: 1.3;
+  }
+  .mock-card-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .mock-priority {
+    font-size: 7px;
+    font-weight: 700;
+    padding: 1px 5px;
+    border-radius: 4px;
+  }
+  .p-critical { background: rgba(239,68,68,0.2); color: #f87171; }
+  .p-high { background: rgba(249,115,22,0.2); color: #fb923c; }
+  .p-medium { background: rgba(245,158,11,0.15); color: #fbbf24; }
+  .p-low { background: rgba(16,185,129,0.15); color: #34d399; }
+
+  .mock-agents {
+    display: flex;
+    gap: 3px;
+  }
+  .mock-agent-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+  }
+  .ad-thinking { background: #f59e0b; }
+  .ad-working { background: #3b82f6; }
+  .ad-done { background: #10b981; }
+  .ad-idle { background: rgba(255,255,255,0.15); }
+
+  /* AI overlay card */
+  .ai-overlay {
+    position: absolute;
+    bottom: 52px; right: 52px;
+    width: 220px;
+    background: rgba(10,10,22,0.95);
+    border: 1px solid rgba(139,92,246,0.4);
+    border-radius: 12px;
+    padding: 12px 14px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 30px rgba(109,40,217,0.15);
+  }
+  .ai-overlay-title {
+    font-size: 10px;
+    font-weight: 700;
+    color: #a78bfa;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .ai-status-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .ai-status-row:last-child { border-bottom: none; }
+  .ai-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .ai-status-text { font-size: 9px; color: rgba(255,255,255,0.6); flex: 1; }
+  .ai-status-badge {
+    font-size: 8px;
+    font-weight: 600;
+    padding: 1px 6px;
+    border-radius: 4px;
+  }
+  .sb-thinking { background: rgba(245,158,11,0.2); color: #fbbf24; }
+  .sb-working { background: rgba(59,130,246,0.2); color: #60a5fa; }
+  .sb-done { background: rgba(16,185,129,0.2); color: #34d399; }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<div class="grid-overlay"></div>
+
+<div class="content">
+  <!-- LEFT -->
+  <div class="left">
+    <div class="badge">
+      <span class="dot"></span>
+      AI-POWERED PROJECT MANAGEMENT
+    </div>
+
+    <div class="main-title">
+      Custom Kanban<br>
+      Board with <span class="highlight">AI<br>Agents</span> Built In
+    </div>
+
+    <div class="subtitle">
+      Full-stack Next.js app with real-time AI agents that think, work, and report — built for your team.
+    </div>
+
+    <div class="features">
+      <div class="feature">
+        <div class="feature-icon" style="background:rgba(139,92,246,0.15);border:1px solid rgba(139,92,246,0.25);color:#a78bfa;">🤖</div>
+        AI Agents per card (Thinking → Working → Done)
+      </div>
+      <div class="feature">
+        <div class="feature-icon" style="background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.25);color:#60a5fa;">💬</div>
+        Streaming AI Chat inside every task
+      </div>
+      <div class="feature">
+        <div class="feature-icon" style="background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.25);color:#34d399;">✨</div>
+        AI Summarize & Priority Suggestion
+      </div>
+      <div class="feature">
+        <div class="feature-icon" style="background:rgba(245,158,11,0.15);border:1px solid rgba(245,158,11,0.25);color:#fbbf24;">📋</div>
+        ERP sidebar: Dashboard, Analytics, Tasks
+      </div>
+    </div>
+
+    <div class="tech-stack">
+      <span class="tech-pill">Next.js 14</span>
+      <span class="tech-pill">TypeScript</span>
+      <span class="tech-pill">Tailwind CSS</span>
+      <span class="tech-pill">Claude AI</span>
+      <span class="tech-pill">Vercel</span>
+    </div>
+  </div>
+
+  <!-- RIGHT -->
+  <div class="right" style="position:relative;">
+    <div class="app-mockup">
+      <!-- Sidebar -->
+      <div class="mock-sidebar">
+        <div class="mock-logo">
+          <div class="mock-logo-icon"></div>
+          <div class="mock-logo-text">Kanban AI</div>
+        </div>
+        <div class="mock-nav-label">WORKSPACE</div>
+        <div class="mock-nav-item"><div class="mock-nav-dot"></div>Dashboard</div>
+        <div class="mock-nav-item active"><div class="mock-nav-dot"></div>Kanban Board</div>
+        <div class="mock-nav-item"><div class="mock-nav-dot"></div>My Tasks</div>
+        <div class="mock-nav-label">AI TOOLS</div>
+        <div class="mock-nav-item"><div class="mock-nav-dot"></div>AI Agents</div>
+        <div class="mock-nav-item"><div class="mock-nav-dot"></div>Analytics</div>
+        <div class="mock-nav-label">MANAGE</div>
+        <div class="mock-nav-item"><div class="mock-nav-dot"></div>Team</div>
+        <div class="mock-nav-item"><div class="mock-nav-dot"></div>Settings</div>
+      </div>
+
+      <!-- Board -->
+      <div class="mock-board">
+        <!-- Todo -->
+        <div class="mock-column">
+          <div class="mock-col-header todo">TODO · 3</div>
+          <div class="mock-card">
+            <div class="mock-card-title">Setup Auth System</div>
+            <div class="mock-card-row">
+              <span class="mock-priority p-high">High</span>
+              <div class="mock-agents"><div class="mock-agent-dot ad-idle"></div><div class="mock-agent-dot ad-idle"></div></div>
+            </div>
+          </div>
+          <div class="mock-card">
+            <div class="mock-card-title">Design Dashboard UI</div>
+            <div class="mock-card-row">
+              <span class="mock-priority p-medium">Medium</span>
+              <div class="mock-agents"><div class="mock-agent-dot ad-done"></div></div>
+            </div>
+          </div>
+          <div class="mock-card">
+            <div class="mock-card-title">Write API Docs</div>
+            <div class="mock-card-row">
+              <span class="mock-priority p-low">Low</span>
+              <div class="mock-agents"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- In Progress -->
+        <div class="mock-column">
+          <div class="mock-col-header inprog">IN PROGRESS · 2</div>
+          <div class="mock-card" style="border-color:rgba(99,102,241,0.25);">
+            <div class="mock-card-title">Build Kanban Board</div>
+            <div class="mock-card-row">
+              <span class="mock-priority p-critical">Critical</span>
+              <div class="mock-agents"><div class="mock-agent-dot ad-working"></div><div class="mock-agent-dot ad-thinking"></div></div>
+            </div>
+          </div>
+          <div class="mock-card">
+            <div class="mock-card-title">AI Agent Integration</div>
+            <div class="mock-card-row">
+              <span class="mock-priority p-high">High</span>
+              <div class="mock-agents"><div class="mock-agent-dot ad-thinking"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- In Review -->
+        <div class="mock-column">
+          <div class="mock-col-header review">IN REVIEW · 2</div>
+          <div class="mock-card">
+            <div class="mock-card-title">Mobile Responsive Layout</div>
+            <div class="mock-card-row">
+              <span class="mock-priority p-medium">Medium</span>
+              <div class="mock-agents"><div class="mock-agent-dot ad-done"></div><div class="mock-agent-dot ad-done"></div></div>
+            </div>
+          </div>
+          <div class="mock-card">
+            <div class="mock-card-title">Performance Optimization</div>
+            <div class="mock-card-row">
+              <span class="mock-priority p-high">High</span>
+              <div class="mock-agents"><div class="mock-agent-dot ad-done"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Done -->
+        <div class="mock-column">
+          <div class="mock-col-header done">DONE · 3</div>
+          <div class="mock-card">
+            <div class="mock-card-title">Project Setup & Config</div>
+            <div class="mock-card-row">
+              <span class="mock-priority p-low">Low</span>
+              <div class="mock-agents"><div class="mock-agent-dot ad-done"></div></div>
+            </div>
+          </div>
+          <div class="mock-card">
+            <div class="mock-card-title">Database Schema Design</div>
+            <div class="mock-card-row">
+              <span class="mock-priority p-medium">Medium</span>
+              <div class="mock-agents"><div class="mock-agent-dot ad-done"></div><div class="mock-agent-dot ad-done"></div></div>
+            </div>
+          </div>
+          <div class="mock-card">
+            <div class="mock-card-title">CI/CD Pipeline</div>
+            <div class="mock-card-row">
+              <span class="mock-priority p-low">Low</span>
+              <div class="mock-agents"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI Agent status overlay -->
+    <div class="ai-overlay">
+      <div class="ai-overlay-title">
+        🤖 AI Agents Running
+      </div>
+      <div class="ai-status-row">
+        <div class="ai-dot" style="background:#f59e0b;"></div>
+        <span class="ai-status-text">Researcher · Build Kanban Board</span>
+        <span class="ai-status-badge sb-thinking">Thinking</span>
+      </div>
+      <div class="ai-status-row">
+        <div class="ai-dot" style="background:#3b82f6;"></div>
+        <span class="ai-status-text">Code Writer · AI Integration</span>
+        <span class="ai-status-badge sb-working">Working</span>
+      </div>
+      <div class="ai-status-row">
+        <div class="ai-dot" style="background:#10b981;"></div>
+        <span class="ai-status-text">Reviewer · Mobile Layout</span>
+        <span class="ai-status-badge sb-done">Done</span>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
