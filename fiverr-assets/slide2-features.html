@@ -48,7 +48,7 @@
   }
   .header {
     text-align: center;
-    margin-bottom: 48px;
+    margin-bottom: 28px;
   }
   .eyebrow {
     font-size: 11px;
@@ -59,7 +59,7 @@
     margin-bottom: 12px;
   }
   .title {
-    font-size: 38px;
+    font-size: 34px;
     font-weight: 800;
     letter-spacing: -0.5px;
   }
@@ -73,7 +73,7 @@
   .features-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
+    gap: 16px;
     flex: 1;
   }
 
@@ -81,11 +81,51 @@
     background: rgba(255,255,255,0.03);
     border: 1px solid rgba(255,255,255,0.07);
     border-radius: 16px;
-    padding: 28px 24px;
+    padding: 20px 22px;
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 10px;
     transition: all 0.2s;
+  }
+
+  .highlight-card {
+    margin-top: 16px;
+    border-radius: 16px;
+    padding: 18px 24px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background: linear-gradient(135deg, rgba(34,211,238,0.08), rgba(99,102,241,0.08));
+    border: 1px solid rgba(34,211,238,0.3);
+    box-shadow: 0 0 40px rgba(34,211,238,0.08);
+  }
+  .new-badge {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 100px;
+    background: linear-gradient(135deg, #22d3ee, #6366f1);
+    color: white;
+    flex-shrink: 0;
+  }
+  .highlight-body { flex: 1; }
+  .highlight-title {
+    font-size: 16px;
+    font-weight: 800;
+    color: white;
+    margin-bottom: 4px;
+  }
+  .highlight-desc {
+    font-size: 12px;
+    color: rgba(255,255,255,0.5);
+    line-height: 1.5;
+  }
+  .highlight-tags {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
   }
   .feature-card:hover {
     border-color: rgba(255,255,255,0.12);
@@ -93,23 +133,24 @@
   }
 
   .feat-icon-wrapper {
-    width: 48px; height: 48px;
-    border-radius: 14px;
+    width: 40px; height: 40px;
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 22px;
+    font-size: 19px;
+    flex-shrink: 0;
   }
 
   .feat-title {
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 700;
     color: white;
   }
   .feat-desc {
-    font-size: 12px;
+    font-size: 11.5px;
     color: rgba(255,255,255,0.45);
-    line-height: 1.6;
+    line-height: 1.55;
   }
 
   .feat-tags {
@@ -176,11 +217,11 @@
     <div class="feature-card" style="border-color:rgba(245,158,11,0.2);background:rgba(245,158,11,0.05);">
       <div class="feat-icon-wrapper" style="background:rgba(245,158,11,0.15);border:1px solid rgba(245,158,11,0.25);">📋</div>
       <div class="feat-title">ERP-Style Navigation</div>
-      <div class="feat-desc">Full sidebar with Dashboard, Kanban Board, My Tasks, AI Agents, Analytics and more — all fully functional pages.</div>
+      <div class="feat-desc">Full sidebar with Dashboard, Kanban Board, My Tasks, AI Agents, Analytics, Knowledge Bot and more — all fully functional pages.</div>
       <div class="feat-tags">
         <span class="feat-tag">Dashboard</span>
         <span class="feat-tag">Analytics</span>
-        <span class="feat-tag">5 Pages</span>
+        <span class="feat-tag">6 Pages</span>
       </div>
     </div>
 
@@ -204,6 +245,20 @@
         <span class="feat-tag">Edge Runtime</span>
         <span class="feat-tag">Next.js 14</span>
       </div>
+    </div>
+  </div>
+
+  <div class="highlight-card">
+    <span class="new-badge">New</span>
+    <div class="feat-icon-wrapper" style="background:rgba(34,211,238,0.15);border:1px solid rgba(34,211,238,0.25);">📚</div>
+    <div class="highlight-body">
+      <div class="highlight-title">AI Knowledge Base Chatbot</div>
+      <div class="highlight-desc">A trainable chatbot that answers only from your own knowledge base — with source citations on every answer. Edit the KB, answers change instantly.</div>
+    </div>
+    <div class="highlight-tags">
+      <span class="feat-tag">Source Citations</span>
+      <span class="feat-tag">Editable KB</span>
+      <span class="feat-tag">No Hallucination</span>
     </div>
   </div>
 </div>
