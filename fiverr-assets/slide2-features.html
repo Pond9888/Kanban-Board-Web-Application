@@ -100,31 +100,42 @@
     display: flex;
     align-items: center;
     gap: 16px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.055), rgba(255,255,255,0.02));
+    border: 1px solid rgba(255,255,255,0.12);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.08);
   }
-  .hl-cyan {
-    background: linear-gradient(135deg, rgba(34,211,238,0.08), rgba(99,102,241,0.08));
-    border: 1px solid rgba(34,211,238,0.3);
-    box-shadow: 0 0 40px rgba(34,211,238,0.08);
+  .hl-icon {
+    width: 40px; height: 40px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.12);
+    flex-shrink: 0;
   }
-  .hl-amber {
-    background: linear-gradient(135deg, rgba(245,158,11,0.08), rgba(236,72,153,0.08));
-    border: 1px solid rgba(245,158,11,0.3);
-    box-shadow: 0 0 40px rgba(245,158,11,0.08);
+  .hl-icon svg {
+    width: 18px; height: 18px;
+    stroke: rgba(255,255,255,0.85);
+    fill: none;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
   }
   .new-badge {
     font-size: 9px;
-    font-weight: 800;
-    letter-spacing: 1.2px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
     text-transform: uppercase;
-    padding: 3px 9px;
+    padding: 3px 10px;
     border-radius: 100px;
-    color: white;
+    color: #e8c896;
+    border: 1px solid rgba(232,200,150,0.35);
+    background: rgba(232,200,150,0.07);
     flex-shrink: 0;
     vertical-align: middle;
-    margin-left: 8px;
+    margin-left: 10px;
   }
-  .badge-cyan { background: linear-gradient(135deg, #22d3ee, #6366f1); }
-  .badge-amber { background: linear-gradient(135deg, #f59e0b, #ec4899); }
   .highlight-body { flex: 1; min-width: 0; }
   .highlight-title {
     font-size: 15px;
@@ -259,17 +270,21 @@
   </div>
 
   <div class="highlight-row">
-    <div class="highlight-card hl-cyan">
-      <div class="feat-icon-wrapper" style="background:rgba(34,211,238,0.15);border:1px solid rgba(34,211,238,0.25);">📚</div>
+    <div class="highlight-card">
+      <div class="hl-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+      </div>
       <div class="highlight-body">
-        <div class="highlight-title">AI Knowledge Base Chatbot<span class="new-badge badge-cyan">New</span></div>
+        <div class="highlight-title">AI Knowledge Base Chatbot<span class="new-badge">New</span></div>
         <div class="highlight-desc">Trainable chatbot that answers only from your own knowledge base — with a source citation on every answer.</div>
       </div>
     </div>
-    <div class="highlight-card hl-amber">
-      <div class="feat-icon-wrapper" style="background:rgba(245,158,11,0.15);border:1px solid rgba(245,158,11,0.25);">⚡</div>
+    <div class="highlight-card">
+      <div class="hl-icon">
+        <svg viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+      </div>
       <div class="highlight-body">
-        <div class="highlight-title">Make / Zapier Automations<span class="new-badge badge-amber">New</span></div>
+        <div class="highlight-title">Make / Zapier Automations<span class="new-badge">New</span></div>
         <div class="highlight-desc">Board events fire webhooks into Make, Zapier or n8n — send notifications, log to Sheets, trigger any flow.</div>
       </div>
     </div>
