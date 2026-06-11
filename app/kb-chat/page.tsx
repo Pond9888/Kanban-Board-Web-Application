@@ -99,6 +99,10 @@ function ChatPanel({ kb }: { kb: KBEntry[] }) {
         }),
       })
       const data = await res.json()
+      if (!res.ok || data.error) {
+        setMessages((m) => [...m, { role: 'assistant', text: `Sorry, the AI service returned an error: ${data.error ?? res.statusText}` }])
+        return
+      }
       setMessages((m) => [...m, { role: 'assistant', text: data.answer ?? 'Something went wrong.', source: data.source }])
     } catch {
       setMessages((m) => [...m, { role: 'assistant', text: 'Connection error — please try sending your question again.' }])
