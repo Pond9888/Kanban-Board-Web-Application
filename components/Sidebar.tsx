@@ -55,8 +55,8 @@ export function Sidebar() {
         </div>
         {!collapsed && (
           <div className="min-w-0">
-            <p className="text-sm font-bold text-white tracking-tight">Kanban AI</p>
-            <p className="text-[10px] text-white/40 truncate">AI-powered ERP</p>
+            <p className="text-sm font-bold text-white tracking-tight">Project Management</p>
+            <p className="text-[10px] text-white/40 truncate">AI-powered System</p>
           </div>
         )}
       </div>
@@ -110,9 +110,9 @@ export function Sidebar() {
         <div className={`flex items-center gap-2 ${collapsed ? 'justify-center' : 'px-1'}`}>
           {!collapsed && (
             <div className="flex items-center gap-2 flex-1 min-w-0">
-              <div className="w-7 h-7 rounded-full bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center text-[11px] font-bold text-white shrink-0">T</div>
+              <div className="w-7 h-7 rounded-full bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center text-[11px] font-bold text-white shrink-0">A</div>
               <div className="min-w-0">
-                <p className="text-xs font-medium text-white/80 truncate">Teerawat</p>
+                <p className="text-xs font-medium text-white/80 truncate">Admin</p>
                 <p className="text-[10px] text-white/30 truncate">Hobby plan</p>
               </div>
             </div>
