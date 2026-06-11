@@ -88,44 +88,54 @@
     transition: all 0.2s;
   }
 
-  .highlight-card {
+  .highlight-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
     margin-top: 16px;
+  }
+  .highlight-card {
     border-radius: 16px;
-    padding: 18px 24px;
+    padding: 16px 20px;
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 16px;
+  }
+  .hl-cyan {
     background: linear-gradient(135deg, rgba(34,211,238,0.08), rgba(99,102,241,0.08));
     border: 1px solid rgba(34,211,238,0.3);
     box-shadow: 0 0 40px rgba(34,211,238,0.08);
   }
+  .hl-amber {
+    background: linear-gradient(135deg, rgba(245,158,11,0.08), rgba(236,72,153,0.08));
+    border: 1px solid rgba(245,158,11,0.3);
+    box-shadow: 0 0 40px rgba(245,158,11,0.08);
+  }
   .new-badge {
-    font-size: 10px;
+    font-size: 9px;
     font-weight: 800;
-    letter-spacing: 1.5px;
+    letter-spacing: 1.2px;
     text-transform: uppercase;
-    padding: 4px 12px;
+    padding: 3px 9px;
     border-radius: 100px;
-    background: linear-gradient(135deg, #22d3ee, #6366f1);
     color: white;
     flex-shrink: 0;
+    vertical-align: middle;
+    margin-left: 8px;
   }
-  .highlight-body { flex: 1; }
+  .badge-cyan { background: linear-gradient(135deg, #22d3ee, #6366f1); }
+  .badge-amber { background: linear-gradient(135deg, #f59e0b, #ec4899); }
+  .highlight-body { flex: 1; min-width: 0; }
   .highlight-title {
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 800;
     color: white;
     margin-bottom: 4px;
   }
   .highlight-desc {
-    font-size: 12px;
+    font-size: 11.5px;
     color: rgba(255,255,255,0.5);
     line-height: 1.5;
-  }
-  .highlight-tags {
-    display: flex;
-    gap: 6px;
-    flex-shrink: 0;
   }
   .feature-card:hover {
     border-color: rgba(255,255,255,0.12);
@@ -248,17 +258,20 @@
     </div>
   </div>
 
-  <div class="highlight-card">
-    <span class="new-badge">New</span>
-    <div class="feat-icon-wrapper" style="background:rgba(34,211,238,0.15);border:1px solid rgba(34,211,238,0.25);">📚</div>
-    <div class="highlight-body">
-      <div class="highlight-title">AI Knowledge Base Chatbot</div>
-      <div class="highlight-desc">A trainable chatbot that answers only from your own knowledge base — with source citations on every answer. Edit the KB, answers change instantly.</div>
+  <div class="highlight-row">
+    <div class="highlight-card hl-cyan">
+      <div class="feat-icon-wrapper" style="background:rgba(34,211,238,0.15);border:1px solid rgba(34,211,238,0.25);">📚</div>
+      <div class="highlight-body">
+        <div class="highlight-title">AI Knowledge Base Chatbot<span class="new-badge badge-cyan">New</span></div>
+        <div class="highlight-desc">Trainable chatbot that answers only from your own knowledge base — with a source citation on every answer.</div>
+      </div>
     </div>
-    <div class="highlight-tags">
-      <span class="feat-tag">Source Citations</span>
-      <span class="feat-tag">Editable KB</span>
-      <span class="feat-tag">No Hallucination</span>
+    <div class="highlight-card hl-amber">
+      <div class="feat-icon-wrapper" style="background:rgba(245,158,11,0.15);border:1px solid rgba(245,158,11,0.25);">⚡</div>
+      <div class="highlight-body">
+        <div class="highlight-title">Make / Zapier Automations<span class="new-badge badge-amber">New</span></div>
+        <div class="highlight-desc">Board events fire webhooks into Make, Zapier or n8n — send notifications, log to Sheets, trigger any flow.</div>
+      </div>
     </div>
   </div>
 </div>
