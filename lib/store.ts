@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { BoardState, Card, Column, AIAgent, ChatMessage, AIAgentType } from './types'
+import { fireAutomation, cardSummary } from './automationStore'
 
 const generateId = () => Math.random().toString(36).substr(2, 9)
 
@@ -184,7 +185,7 @@ const initialColumns: Column[] = [
   { id: 'done', title: 'Done', color: 'from-emerald-500 to-teal-500', cardIds: ['card-7', 'card-8'] },
 ]
 
-export const useBoardStore = create<BoardState>((set) => ({
+export const useBoardStore = create<BoardState>((set, get) => ({
   columns: initialColumns,
   cards: initialCards,
 
@@ -210,15 +211,21 @@ export const useBoardStore = create<BoardState>((set) => ({
           : col
       ),
     }))
+    const column = get().columns.find((c) => c.id === columnId)
+    fireAutomation('card.created', { card: cardSummary(newCard), column: column?.title })
   },
 
   updateCard: (cardId, updates) => {
+    const wasCritical = get().cards[cardId]?.priority === 'critical'
     set((state) => ({
       cards: {
         ...state.cards,
         [cardId]: { ...state.cards[cardId], ...updates },
       },
     }))
+    if (updates.priority === 'critical' && !wasCritical) {
+      fireAutomation('card.critical', { card: cardSummary(get().cards[cardId]) })
+    }
   },
 
   deleteCard: (cardId) => {
@@ -265,6 +272,14 @@ export const useBoardStore = create<BoardState>((set) => ({
         },
       }
     })
+    if (sourceColumnId !== destColumnId) {
+      const { cards, columns } = get()
+      fireAutomation('card.moved', {
+        card: cardSummary(cards[cardId]),
+        from: columns.find((c) => c.id === sourceColumnId)?.title,
+        to: columns.find((c) => c.id === destColumnId)?.title,
+      })
+    }
   },
 
   addAIAgent: (cardId, agentType) => {
@@ -294,6 +309,7 @@ export const useBoardStore = create<BoardState>((set) => ({
   },
 
   updateAIAgent: (cardId, agentId, updates) => {
+    const wasDone = get().cards[cardId]?.aiAgents.find((a) => a.id === agentId)?.status === 'done'
     set((state) => ({
       cards: {
         ...state.cards,
@@ -305,6 +321,14 @@ export const useBoardStore = create<BoardState>((set) => ({
         },
       },
     }))
+    if (updates.status === 'done' && !wasDone) {
+      const card = get().cards[cardId]
+      const agent = card.aiAgents.find((a) => a.id === agentId)
+      fireAutomation('agent.done', {
+        card: cardSummary(card),
+        agent: agent ? { name: agent.name, type: agent.type, result: agent.result } : undefined,
+      })
+    }
   },
 
   removeAIAgent: (cardId, agentId) => {
