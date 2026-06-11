@@ -41,11 +41,17 @@ ${kbText}
 === CONVERSATION ===
 ${conversation}`
 
-  const message = await anthropic.messages.create({
-    model: 'claude-haiku-4-5-20251001',
-    max_tokens: 1024,
-    messages: [{ role: 'user', content: prompt }],
-  })
+  let message
+  try {
+    message = await anthropic.messages.create({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 1024,
+      messages: [{ role: 'user', content: prompt }],
+    })
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : 'AI service error'
+    return NextResponse.json({ error: msg }, { status: 502 })
+  }
 
   const content = message.content[0]
   if (content.type !== 'text') {

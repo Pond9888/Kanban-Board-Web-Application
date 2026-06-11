@@ -32,7 +32,9 @@ ${board}`,
         }
         controller.close()
       } catch (error) {
-        controller.error(error)
+        const msg = error instanceof Error ? error.message : 'AI service error'
+        controller.enqueue(encoder.encode(`⚠️ AI service error: ${msg}`))
+        controller.close()
       }
     },
   })
