@@ -14,39 +14,32 @@
     background: #080810;
     color: white;
   }
-
-  /* Background gradients */
-  .bg {
-    position: absolute;
-    inset: 0;
-  }
   .bg::before {
     content: '';
-    position: absolute;
-    top: -100px; right: -100px;
+    position: fixed;
+    top: -120px; right: -120px;
     width: 500px; height: 500px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(109,40,217,0.25) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(109,40,217,0.22) 0%, transparent 70%);
   }
   .bg::after {
     content: '';
-    position: absolute;
-    bottom: -100px; left: -100px;
+    position: fixed;
+    bottom: -120px; left: -120px;
     width: 500px; height: 500px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(79,70,229,0.2) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(79,70,229,0.15) 0%, transparent 70%);
   }
-
-  /* Grid noise overlay */
   .grid-overlay {
-    position: absolute;
+    position: fixed;
     inset: 0;
     background-image:
-      linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
     background-size: 40px 40px;
   }
 
+  /* ──────────── LAYOUT ──────────── */
   .content {
     position: relative;
     z-index: 10;
@@ -54,294 +47,313 @@
     height: 100%;
   }
 
-  /* LEFT SIDE */
+  /* ──────────── LEFT PANEL ──────────── */
   .left {
-    width: 480px;
-    padding: 56px 48px;
+    width: 390px;
+    padding: 44px 40px;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 24px;
+    gap: 20px;
+    flex-shrink: 0;
   }
-
   .badge {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    padding: 6px 14px;
+    gap: 7px;
+    padding: 5px 13px;
     border-radius: 100px;
-    background: rgba(109,40,217,0.2);
+    background: rgba(109,40,217,0.18);
     border: 1px solid rgba(139,92,246,0.3);
-    font-size: 12px;
-    font-weight: 600;
+    font-size: 11px;
+    font-weight: 700;
     color: #a78bfa;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.4px;
     width: fit-content;
   }
-  .badge .dot {
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    background: #a78bfa;
-    animation: pulse 1.5s infinite;
-  }
-
-  .main-title {
-    font-size: 46px;
-    font-weight: 800;
-    line-height: 1.1;
-    letter-spacing: -1px;
-  }
-  .main-title .highlight {
+  .badge .dot { width: 6px; height: 6px; border-radius: 50%; background: #a78bfa; }
+  .main-title { font-size: 40px; font-weight: 800; line-height: 1.1; letter-spacing: -1px; }
+  .main-title .hl {
     background: linear-gradient(135deg, #818cf8, #a78bfa, #c084fc);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .subtitle { font-size: 14px; color: rgba(255,255,255,0.45); line-height: 1.6; }
+
+  .feat-list { display: flex; flex-direction: column; gap: 9px; }
+  .feat-row {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 12px; color: rgba(255,255,255,0.7); font-weight: 500;
+  }
+  .feat-icon {
+    width: 26px; height: 26px; border-radius: 7px;
+    display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0;
   }
 
-  .subtitle {
-    font-size: 16px;
-    color: rgba(255,255,255,0.5);
-    line-height: 1.6;
-    max-width: 360px;
+  .pills { display: flex; gap: 6px; flex-wrap: wrap; }
+  .pill {
+    padding: 3px 11px; border-radius: 100px;
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.09);
+    font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.4);
   }
 
-  .features {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  .feature {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 13px;
-    color: rgba(255,255,255,0.7);
-    font-weight: 500;
-  }
-  .feature-icon {
-    width: 28px; height: 28px;
-    border-radius: 8px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 13px;
-    flex-shrink: 0;
-  }
-
-  .tech-stack {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
-  .tech-pill {
-    padding: 4px 12px;
-    border-radius: 100px;
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.1);
-    font-size: 11px;
-    font-weight: 600;
-    color: rgba(255,255,255,0.5);
-    letter-spacing: 0.3px;
-  }
-
-  /* RIGHT SIDE - App mockup */
+  /* ──────────── RIGHT PANEL ──────────── */
   .right {
     flex: 1;
-    padding: 32px 40px 32px 20px;
+    padding: 24px 28px 24px 12px;
     display: flex;
-    flex-direction: column;
-    gap: 12px;
+    align-items: center;
     justify-content: center;
+    position: relative;
   }
 
-  /* Mini sidebar + board mockup */
-  .app-mockup {
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 16px;
-    overflow: hidden;
-    display: flex;
-    height: 420px;
-    box-shadow: 0 40px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.05);
-  }
-
-  /* Sidebar mock */
-  .mock-sidebar {
-    width: 140px;
-    background: rgba(10,10,22,0.8);
-    border-right: 1px solid rgba(255,255,255,0.06);
-    padding: 16px 8px;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    flex-shrink: 0;
-  }
-  .mock-logo {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px;
-    margin-bottom: 12px;
-  }
-  .mock-logo-icon {
-    width: 28px; height: 28px;
-    border-radius: 8px;
-    background: linear-gradient(135deg, #7c3aed, #4f46e5);
-    flex-shrink: 0;
-  }
-  .mock-logo-text {
-    font-size: 11px;
-    font-weight: 700;
-    color: white;
-  }
-  .mock-nav-label {
-    font-size: 8px;
-    font-weight: 700;
-    color: rgba(255,255,255,0.2);
-    letter-spacing: 1px;
-    padding: 0 8px;
-    margin: 6px 0 3px;
-  }
-  .mock-nav-item {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    padding: 6px 8px;
-    border-radius: 8px;
-    font-size: 10px;
-    font-weight: 500;
-    color: rgba(255,255,255,0.35);
-  }
-  .mock-nav-item.active {
-    background: rgba(99,102,241,0.2);
-    border: 1px solid rgba(99,102,241,0.2);
-    color: #a5b4fc;
-  }
-  .mock-nav-dot {
-    width: 14px; height: 14px;
-    border-radius: 4px;
-    background: currentColor;
-    opacity: 0.4;
-    flex-shrink: 0;
-  }
-
-  /* Board area */
-  .mock-board {
-    flex: 1;
-    padding: 16px;
-    display: flex;
-    gap: 10px;
-    overflow: hidden;
-    background: #080810;
-  }
-
-  .mock-column {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    min-width: 0;
-  }
-  .mock-col-header {
-    font-size: 9px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-    padding: 5px 10px;
-    border-radius: 8px;
-    text-align: center;
-  }
-  .mock-col-header.todo { background: rgba(148,163,184,0.15); color: #94a3b8; }
-  .mock-col-header.inprog { background: rgba(99,102,241,0.2); color: #818cf8; }
-  .mock-col-header.review { background: rgba(245,158,11,0.15); color: #fbbf24; }
-  .mock-col-header.done { background: rgba(16,185,129,0.15); color: #34d399; }
-
-  .mock-card {
-    background: rgba(255,255,255,0.04);
+  /* ── App shell ── */
+  .app-shell {
+    width: 100%; height: 100%;
+    background: rgba(255,255,255,0.025);
     border: 1px solid rgba(255,255,255,0.07);
-    border-radius: 8px;
-    padding: 8px 9px;
-  }
-  .mock-card-title {
-    font-size: 8px;
-    font-weight: 600;
-    color: rgba(255,255,255,0.8);
-    margin-bottom: 5px;
-    line-height: 1.3;
-  }
-  .mock-card-row {
+    border-radius: 14px;
+    overflow: hidden;
     display: flex;
-    align-items: center;
-    justify-content: space-between;
+    box-shadow: 0 32px 64px rgba(0,0,0,0.55);
+    position: relative;
   }
-  .mock-priority {
-    font-size: 7px;
-    font-weight: 700;
-    padding: 1px 5px;
-    border-radius: 4px;
-  }
-  .p-critical { background: rgba(239,68,68,0.2); color: #f87171; }
-  .p-high { background: rgba(249,115,22,0.2); color: #fb923c; }
-  .p-medium { background: rgba(245,158,11,0.15); color: #fbbf24; }
-  .p-low { background: rgba(16,185,129,0.15); color: #34d399; }
 
-  .mock-agents {
-    display: flex;
-    gap: 3px;
+  /* ── Mini sidebar ── */
+  .m-sidebar {
+    width: 120px; flex-shrink: 0;
+    background: rgba(10,10,22,0.9);
+    border-right: 1px solid rgba(255,255,255,0.06);
+    padding: 14px 7px;
+    display: flex; flex-direction: column; gap: 3px;
   }
-  .mock-agent-dot {
-    width: 7px; height: 7px;
-    border-radius: 50%;
+  .m-logo {
+    display: flex; align-items: center; gap: 7px; padding: 7px; margin-bottom: 10px;
   }
-  .ad-thinking { background: #f59e0b; }
-  .ad-working { background: #3b82f6; }
-  .ad-done { background: #10b981; }
-  .ad-idle { background: rgba(255,255,255,0.15); }
+  .m-logo-icon {
+    width: 24px; height: 24px; border-radius: 7px;
+    background: linear-gradient(135deg, #7c3aed, #4f46e5); flex-shrink: 0;
+  }
+  .m-logo-text { font-size: 10px; font-weight: 700; color: white; }
+  .m-section { font-size: 7.5px; font-weight: 700; color: rgba(255,255,255,0.2); letter-spacing: 1px; padding: 0 7px; margin: 6px 0 2px; }
+  .m-item {
+    display: flex; align-items: center; gap: 6px;
+    padding: 5px 7px; border-radius: 7px;
+    font-size: 9px; font-weight: 500; color: rgba(255,255,255,0.35);
+  }
+  .m-item.active {
+    background: rgba(99,102,241,0.18); border: 1px solid rgba(99,102,241,0.2); color: #a5b4fc;
+  }
+  .m-icon { width: 13px; height: 13px; border-radius: 3px; background: currentColor; opacity: 0.35; flex-shrink: 0; }
 
-  /* AI overlay card */
-  .ai-overlay {
+  /* ── Board area ── */
+  .m-board {
+    flex: 1; padding: 12px 10px; display: flex; gap: 8px;
+    background: #080810; overflow: hidden;
+  }
+  .m-col { flex: 1; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+  .m-col-h {
+    font-size: 7.5px; font-weight: 700; letter-spacing: 0.4px;
+    padding: 4px 8px; border-radius: 6px; text-align: center; white-space: nowrap;
+  }
+  .ch-todo  { background: rgba(148,163,184,0.12); color: #94a3b8; }
+  .ch-prog  { background: rgba(99,102,241,0.18); color: #818cf8; }
+  .ch-rev   { background: rgba(245,158,11,0.13); color: #fbbf24; }
+  .ch-done  { background: rgba(16,185,129,0.13); color: #34d399; }
+
+  .m-card {
+    background: rgba(255,255,255,0.035); border: 1px solid rgba(255,255,255,0.065);
+    border-radius: 7px; padding: 7px 8px;
+  }
+  .m-card.highlight { border-color: rgba(99,102,241,0.35); background: rgba(99,102,241,0.07); }
+  .m-card-title { font-size: 7.5px; font-weight: 600; color: rgba(255,255,255,0.8); margin-bottom: 4px; line-height: 1.3; }
+  .m-card-row { display: flex; align-items: center; justify-content: space-between; }
+  .m-pri { font-size: 6.5px; font-weight: 700; padding: 1px 5px; border-radius: 4px; }
+  .pri-c { background: rgba(239,68,68,0.2); color: #f87171; }
+  .pri-h { background: rgba(249,115,22,0.2); color: #fb923c; }
+  .pri-m { background: rgba(245,158,11,0.15); color: #fbbf24; }
+  .pri-l { background: rgba(16,185,129,0.15); color: #34d399; }
+  .m-dots { display: flex; gap: 2.5px; }
+  .m-dot { width: 6px; height: 6px; border-radius: 50%; }
+  .d-think { background: #f59e0b; }
+  .d-work  { background: #3b82f6; }
+  .d-done  { background: #10b981; }
+  .d-idle  { background: rgba(255,255,255,0.15); }
+
+  /* ──────────── CARD MODAL (floating) ──────────── */
+  .modal {
     position: absolute;
-    bottom: 52px; right: 52px;
-    width: 220px;
-    background: rgba(10,10,22,0.95);
-    border: 1px solid rgba(139,92,246,0.4);
-    border-radius: 12px;
-    padding: 12px 14px;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 30px rgba(109,40,217,0.15);
+    top: 18px; right: -10px;
+    width: 310px;
+    background: #0e0e1e;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 32px 64px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.05);
+    z-index: 20;
   }
-  .ai-overlay-title {
-    font-size: 10px;
-    font-weight: 700;
-    color: #a78bfa;
-    margin-bottom: 8px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .ai-status-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 5px 0;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
-  }
-  .ai-status-row:last-child { border-bottom: none; }
-  .ai-dot {
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-  .ai-status-text { font-size: 9px; color: rgba(255,255,255,0.6); flex: 1; }
-  .ai-status-badge {
-    font-size: 8px;
-    font-weight: 600;
-    padding: 1px 6px;
-    border-radius: 4px;
-  }
-  .sb-thinking { background: rgba(245,158,11,0.2); color: #fbbf24; }
-  .sb-working { background: rgba(59,130,246,0.2); color: #60a5fa; }
-  .sb-done { background: rgba(16,185,129,0.2); color: #34d399; }
 
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.4; }
+  /* Modal header */
+  .modal-header {
+    padding: 14px 16px 0;
+  }
+  .modal-tag {
+    font-size: 8px; font-weight: 700; color: #818cf8; letter-spacing: 0.5px; margin-bottom: 5px;
+  }
+  .modal-title { font-size: 13px; font-weight: 700; color: white; line-height: 1.3; margin-bottom: 10px; }
+  .modal-meta { display: flex; gap: 6px; align-items: center; margin-bottom: 12px; }
+  .modal-pri-badge {
+    font-size: 8px; font-weight: 700; padding: 2px 7px; border-radius: 5px;
+    background: rgba(239,68,68,0.18); color: #f87171; border: 1px solid rgba(239,68,68,0.25);
+  }
+  .modal-assign {
+    display: flex; align-items: center; gap: 4px; font-size: 8px; color: rgba(255,255,255,0.4);
+  }
+  .avatar {
+    width: 16px; height: 16px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 7px; font-weight: 700; color: white;
+  }
+
+  /* Tabs */
+  .modal-tabs {
+    display: flex; gap: 0; border-bottom: 1px solid rgba(255,255,255,0.07); padding: 0 16px;
+  }
+  .tab {
+    font-size: 9px; font-weight: 600; padding: 7px 10px; color: rgba(255,255,255,0.35);
+    border-bottom: 2px solid transparent; cursor: pointer; white-space: nowrap;
+  }
+  .tab.active { color: #818cf8; border-bottom-color: #818cf8; }
+
+  /* ── Details tab ── */
+  .modal-body { padding: 12px 16px; }
+  .modal-section-label {
+    font-size: 8px; font-weight: 700; color: rgba(255,255,255,0.25); letter-spacing: 0.8px;
+    text-transform: uppercase; margin-bottom: 5px;
+  }
+  .modal-desc-box {
+    background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 7px; padding: 8px 10px;
+    font-size: 8.5px; color: rgba(255,255,255,0.5); line-height: 1.55; margin-bottom: 10px;
+  }
+  .modal-ai-btns { display: flex; gap: 6px; margin-bottom: 12px; }
+  .ai-btn {
+    display: flex; align-items: center; gap: 5px;
+    padding: 5px 10px; border-radius: 7px; font-size: 8px; font-weight: 600; border: 1px solid;
+  }
+  .ai-btn-sum { background: rgba(99,102,241,0.12); border-color: rgba(99,102,241,0.25); color: #a5b4fc; }
+  .ai-btn-pri { background: rgba(245,158,11,0.1); border-color: rgba(245,158,11,0.2); color: #fbbf24; }
+
+  /* priority suggestion box */
+  .priority-box {
+    background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.2);
+    border-radius: 8px; padding: 8px 10px; margin-bottom: 10px;
+  }
+  .priority-box-row { display: flex; align-items: center; gap: 6px; margin-bottom: 3px; }
+  .priority-box-label { font-size: 8px; font-weight: 700; color: #fbbf24; }
+  .priority-box-badge {
+    font-size: 8px; font-weight: 700; padding: 1px 7px; border-radius: 4px;
+    background: rgba(239,68,68,0.2); color: #f87171;
+  }
+  .priority-box-reason { font-size: 7.5px; color: rgba(255,255,255,0.4); line-height: 1.5; }
+
+  .modal-tags-row { display: flex; gap: 4px; flex-wrap: wrap; }
+  .modal-tag-chip {
+    font-size: 7.5px; padding: 2px 7px; border-radius: 4px;
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); color: rgba(255,255,255,0.4);
+  }
+
+  /* ── Agents panel (side popup) ── */
+  .agents-popup {
+    position: absolute;
+    bottom: 60px; left: -8px;
+    width: 230px;
+    background: #0e0e1e;
+    border: 1px solid rgba(99,102,241,0.3);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 30px rgba(99,102,241,0.08);
+    z-index: 25;
+  }
+  .ap-header {
+    padding: 10px 12px 8px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    font-size: 9px; font-weight: 700; color: #a5b4fc;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .ap-tab-row { display: flex; gap: 0; padding: 0 12px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+  .ap-tab {
+    font-size: 8px; font-weight: 600; padding: 5px 8px;
+    color: rgba(255,255,255,0.3); border-bottom: 1.5px solid transparent;
+  }
+  .ap-tab.active { color: #818cf8; border-bottom-color: #818cf8; }
+  .ap-body { padding: 10px 12px; display: flex; flex-direction: column; gap: 6px; }
+
+  .agent-row {
+    display: flex; align-items: center; gap: 8px;
+    padding: 6px 8px; border-radius: 7px;
+    background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05);
+  }
+  .agent-status-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  .agent-info { flex: 1; min-width: 0; }
+  .agent-name { font-size: 8.5px; font-weight: 600; color: rgba(255,255,255,0.8); }
+  .agent-sub { font-size: 7px; color: rgba(255,255,255,0.3); margin-top: 1px; }
+  .agent-badge {
+    font-size: 7.5px; font-weight: 700; padding: 1.5px 7px; border-radius: 4px; white-space: nowrap;
+  }
+  .ab-think { background: rgba(245,158,11,0.18); color: #fbbf24; }
+  .ab-work  { background: rgba(59,130,246,0.18); color: #60a5fa; }
+  .ab-done  { background: rgba(16,185,129,0.18); color: #34d399; }
+
+  .agent-result {
+    background: rgba(16,185,129,0.05); border: 1px solid rgba(16,185,129,0.15);
+    border-radius: 6px; padding: 6px 8px; margin-top: 2px;
+  }
+  .agent-result-label { font-size: 7px; color: #34d399; font-weight: 700; margin-bottom: 2px; }
+  .agent-result-text { font-size: 7.5px; color: rgba(255,255,255,0.45); line-height: 1.5; }
+
+  /* ── Chat popup ── */
+  .chat-popup {
+    position: absolute;
+    bottom: 20px; right: -8px;
+    width: 220px;
+    background: #0e0e1e;
+    border: 1px solid rgba(59,130,246,0.3);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 24px rgba(59,130,246,0.07);
+    z-index: 25;
+  }
+  .chat-header {
+    padding: 9px 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    font-size: 9px; font-weight: 700; color: #60a5fa;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .chat-messages { padding: 8px 10px; display: flex; flex-direction: column; gap: 6px; }
+  .chat-msg-user {
+    align-self: flex-end;
+    background: rgba(99,102,241,0.2); border: 1px solid rgba(99,102,241,0.25);
+    border-radius: 8px 8px 2px 8px;
+    padding: 5px 9px; font-size: 8px; color: #a5b4fc; max-width: 85%;
+  }
+  .chat-msg-ai {
+    align-self: flex-start;
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 8px 8px 8px 2px;
+    padding: 5px 9px; font-size: 8px; color: rgba(255,255,255,0.6); max-width: 90%; line-height: 1.55;
+  }
+  .chat-cursor { display: inline-block; width: 5px; height: 10px; background: #60a5fa; border-radius: 1px; vertical-align: middle; margin-left: 2px; }
+  .chat-input-row {
+    padding: 6px 10px; border-top: 1px solid rgba(255,255,255,0.06);
+    display: flex; gap: 6px; align-items: center;
+  }
+  .chat-input-fake {
+    flex: 1; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 6px; padding: 4px 8px; font-size: 7.5px; color: rgba(255,255,255,0.25);
+  }
+  .chat-send {
+    width: 20px; height: 20px; border-radius: 6px;
+    background: rgba(99,102,241,0.3); display: flex; align-items: center; justify-content: center; font-size: 9px;
   }
 </style>
 </head>
@@ -350,7 +362,8 @@
 <div class="grid-overlay"></div>
 
 <div class="content">
-  <!-- LEFT -->
+
+  <!-- ══ LEFT ══ -->
   <div class="left">
     <div class="badge">
       <span class="dot"></span>
@@ -359,178 +372,243 @@
 
     <div class="main-title">
       Custom Kanban<br>
-      Board with <span class="highlight">AI<br>Agents</span> Built In
+      Board with <span class="hl">AI<br>Agents</span> Built In
     </div>
 
     <div class="subtitle">
       Full-stack Next.js app with real-time AI agents that think, work, and report — built for your team.
     </div>
 
-    <div class="features">
-      <div class="feature">
-        <div class="feature-icon" style="background:rgba(139,92,246,0.15);border:1px solid rgba(139,92,246,0.25);color:#a78bfa;">🤖</div>
-        AI Agents per card (Thinking → Working → Done)
+    <div class="feat-list">
+      <div class="feat-row">
+        <div class="feat-icon" style="background:rgba(139,92,246,0.15);border:1px solid rgba(139,92,246,0.25);">🤖</div>
+        AI Agents per card — 5 types, live status
       </div>
-      <div class="feature">
-        <div class="feature-icon" style="background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.25);color:#60a5fa;">💬</div>
+      <div class="feat-row">
+        <div class="feat-icon" style="background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.25);">💬</div>
         Streaming AI Chat inside every task
       </div>
-      <div class="feature">
-        <div class="feature-icon" style="background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.25);color:#34d399;">✨</div>
-        AI Summarize & Priority Suggestion
+      <div class="feat-row">
+        <div class="feat-icon" style="background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.25);">✨</div>
+        AI Summarize description + suggest priority
       </div>
-      <div class="feature">
-        <div class="feature-icon" style="background:rgba(245,158,11,0.15);border:1px solid rgba(245,158,11,0.25);color:#fbbf24;">📋</div>
-        ERP sidebar: Dashboard, Analytics, Tasks
+      <div class="feat-row">
+        <div class="feat-icon" style="background:rgba(245,158,11,0.15);border:1px solid rgba(245,158,11,0.25);">🏷️</div>
+        Tags, assignees, priority labels per card
+      </div>
+      <div class="feat-row">
+        <div class="feat-icon" style="background:rgba(236,72,153,0.15);border:1px solid rgba(236,72,153,0.25);">📋</div>
+        Dashboard, Analytics, Tasks — ERP sidebar
+      </div>
+      <div class="feat-row">
+        <div class="feat-icon" style="background:rgba(14,165,233,0.15);border:1px solid rgba(14,165,233,0.25);">🚀</div>
+        Deployed on Vercel, Edge Runtime AI
       </div>
     </div>
 
-    <div class="tech-stack">
-      <span class="tech-pill">Next.js 14</span>
-      <span class="tech-pill">TypeScript</span>
-      <span class="tech-pill">Tailwind CSS</span>
-      <span class="tech-pill">Claude AI</span>
-      <span class="tech-pill">Vercel</span>
+    <div class="pills">
+      <span class="pill">Next.js 14</span>
+      <span class="pill">TypeScript</span>
+      <span class="pill">Tailwind CSS</span>
+      <span class="pill">Claude AI</span>
+      <span class="pill">Zustand</span>
+      <span class="pill">Vercel</span>
     </div>
   </div>
 
-  <!-- RIGHT -->
-  <div class="right" style="position:relative;">
-    <div class="app-mockup">
+  <!-- ══ RIGHT ══ -->
+  <div class="right">
+    <div class="app-shell">
+
       <!-- Sidebar -->
-      <div class="mock-sidebar">
-        <div class="mock-logo">
-          <div class="mock-logo-icon"></div>
-          <div class="mock-logo-text">Kanban AI</div>
+      <div class="m-sidebar">
+        <div class="m-logo">
+          <div class="m-logo-icon"></div>
+          <div class="m-logo-text">Kanban AI</div>
         </div>
-        <div class="mock-nav-label">WORKSPACE</div>
-        <div class="mock-nav-item"><div class="mock-nav-dot"></div>Dashboard</div>
-        <div class="mock-nav-item active"><div class="mock-nav-dot"></div>Kanban Board</div>
-        <div class="mock-nav-item"><div class="mock-nav-dot"></div>My Tasks</div>
-        <div class="mock-nav-label">AI TOOLS</div>
-        <div class="mock-nav-item"><div class="mock-nav-dot"></div>AI Agents</div>
-        <div class="mock-nav-item"><div class="mock-nav-dot"></div>Analytics</div>
-        <div class="mock-nav-label">MANAGE</div>
-        <div class="mock-nav-item"><div class="mock-nav-dot"></div>Team</div>
-        <div class="mock-nav-item"><div class="mock-nav-dot"></div>Settings</div>
+        <div class="m-section">WORKSPACE</div>
+        <div class="m-item"><div class="m-icon"></div>Dashboard</div>
+        <div class="m-item active"><div class="m-icon"></div>Kanban Board</div>
+        <div class="m-item"><div class="m-icon"></div>My Tasks</div>
+        <div class="m-section">AI TOOLS</div>
+        <div class="m-item"><div class="m-icon"></div>AI Agents</div>
+        <div class="m-item"><div class="m-icon"></div>AI Chat</div>
+        <div class="m-item"><div class="m-icon"></div>Analytics</div>
+        <div class="m-section">MANAGE</div>
+        <div class="m-item"><div class="m-icon"></div>Projects</div>
+        <div class="m-item"><div class="m-icon"></div>Team</div>
+        <div class="m-item"><div class="m-icon"></div>Settings</div>
       </div>
 
       <!-- Board -->
-      <div class="mock-board">
-        <!-- Todo -->
-        <div class="mock-column">
-          <div class="mock-col-header todo">TODO · 3</div>
-          <div class="mock-card">
-            <div class="mock-card-title">Setup Auth System</div>
-            <div class="mock-card-row">
-              <span class="mock-priority p-high">High</span>
-              <div class="mock-agents"><div class="mock-agent-dot ad-idle"></div><div class="mock-agent-dot ad-idle"></div></div>
-            </div>
+      <div class="m-board">
+        <div class="m-col">
+          <div class="m-col-h ch-todo">TODO · 3</div>
+          <div class="m-card">
+            <div class="m-card-title">Setup Auth System</div>
+            <div class="m-card-row"><span class="m-pri pri-h">High</span><div class="m-dots"><div class="m-dot d-idle"></div></div></div>
           </div>
-          <div class="mock-card">
-            <div class="mock-card-title">Design Dashboard UI</div>
-            <div class="mock-card-row">
-              <span class="mock-priority p-medium">Medium</span>
-              <div class="mock-agents"><div class="mock-agent-dot ad-done"></div></div>
-            </div>
+          <div class="m-card">
+            <div class="m-card-title">Design Dashboard UI</div>
+            <div class="m-card-row"><span class="m-pri pri-m">Medium</span><div class="m-dots"><div class="m-dot d-done"></div></div></div>
           </div>
-          <div class="mock-card">
-            <div class="mock-card-title">Write API Docs</div>
-            <div class="mock-card-row">
-              <span class="mock-priority p-low">Low</span>
-              <div class="mock-agents"></div>
-            </div>
+          <div class="m-card">
+            <div class="m-card-title">Write API Docs</div>
+            <div class="m-card-row"><span class="m-pri pri-l">Low</span><div class="m-dots"></div></div>
           </div>
         </div>
-
-        <!-- In Progress -->
-        <div class="mock-column">
-          <div class="mock-col-header inprog">IN PROGRESS · 2</div>
-          <div class="mock-card" style="border-color:rgba(99,102,241,0.25);">
-            <div class="mock-card-title">Build Kanban Board</div>
-            <div class="mock-card-row">
-              <span class="mock-priority p-critical">Critical</span>
-              <div class="mock-agents"><div class="mock-agent-dot ad-working"></div><div class="mock-agent-dot ad-thinking"></div></div>
-            </div>
+        <div class="m-col">
+          <div class="m-col-h ch-prog">IN PROGRESS · 2</div>
+          <div class="m-card highlight">
+            <div class="m-card-title">Build Kanban Board</div>
+            <div class="m-card-row"><span class="m-pri pri-c">Critical</span><div class="m-dots"><div class="m-dot d-work"></div><div class="m-dot d-think"></div></div></div>
           </div>
-          <div class="mock-card">
-            <div class="mock-card-title">AI Agent Integration</div>
-            <div class="mock-card-row">
-              <span class="mock-priority p-high">High</span>
-              <div class="mock-agents"><div class="mock-agent-dot ad-thinking"></div></div>
-            </div>
+          <div class="m-card">
+            <div class="m-card-title">AI Agent Integration</div>
+            <div class="m-card-row"><span class="m-pri pri-h">High</span><div class="m-dots"><div class="m-dot d-think"></div></div></div>
           </div>
         </div>
-
-        <!-- In Review -->
-        <div class="mock-column">
-          <div class="mock-col-header review">IN REVIEW · 2</div>
-          <div class="mock-card">
-            <div class="mock-card-title">Mobile Responsive Layout</div>
-            <div class="mock-card-row">
-              <span class="mock-priority p-medium">Medium</span>
-              <div class="mock-agents"><div class="mock-agent-dot ad-done"></div><div class="mock-agent-dot ad-done"></div></div>
-            </div>
+        <div class="m-col">
+          <div class="m-col-h ch-rev">IN REVIEW · 2</div>
+          <div class="m-card">
+            <div class="m-card-title">Mobile Responsive</div>
+            <div class="m-card-row"><span class="m-pri pri-m">Medium</span><div class="m-dots"><div class="m-dot d-done"></div><div class="m-dot d-done"></div></div></div>
           </div>
-          <div class="mock-card">
-            <div class="mock-card-title">Performance Optimization</div>
-            <div class="mock-card-row">
-              <span class="mock-priority p-high">High</span>
-              <div class="mock-agents"><div class="mock-agent-dot ad-done"></div></div>
-            </div>
+          <div class="m-card">
+            <div class="m-card-title">Performance Optimization</div>
+            <div class="m-card-row"><span class="m-pri pri-h">High</span><div class="m-dots"><div class="m-dot d-done"></div></div></div>
           </div>
         </div>
-
-        <!-- Done -->
-        <div class="mock-column">
-          <div class="mock-col-header done">DONE · 3</div>
-          <div class="mock-card">
-            <div class="mock-card-title">Project Setup & Config</div>
-            <div class="mock-card-row">
-              <span class="mock-priority p-low">Low</span>
-              <div class="mock-agents"><div class="mock-agent-dot ad-done"></div></div>
-            </div>
+        <div class="m-col">
+          <div class="m-col-h ch-done">DONE · 3</div>
+          <div class="m-card">
+            <div class="m-card-title">Project Setup</div>
+            <div class="m-card-row"><span class="m-pri pri-l">Low</span><div class="m-dots"><div class="m-dot d-done"></div></div></div>
           </div>
-          <div class="mock-card">
-            <div class="mock-card-title">Database Schema Design</div>
-            <div class="mock-card-row">
-              <span class="mock-priority p-medium">Medium</span>
-              <div class="mock-agents"><div class="mock-agent-dot ad-done"></div><div class="mock-agent-dot ad-done"></div></div>
-            </div>
+          <div class="m-card">
+            <div class="m-card-title">Database Schema</div>
+            <div class="m-card-row"><span class="m-pri pri-m">Medium</span><div class="m-dots"><div class="m-dot d-done"></div><div class="m-dot d-done"></div></div></div>
           </div>
-          <div class="mock-card">
-            <div class="mock-card-title">CI/CD Pipeline</div>
-            <div class="mock-card-row">
-              <span class="mock-priority p-low">Low</span>
-              <div class="mock-agents"></div>
-            </div>
+          <div class="m-card">
+            <div class="m-card-title">CI/CD Pipeline</div>
+            <div class="m-card-row"><span class="m-pri pri-l">Low</span><div class="m-dots"></div></div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- AI Agent status overlay -->
-    <div class="ai-overlay">
-      <div class="ai-overlay-title">
-        🤖 AI Agents Running
+    <!-- ══ CARD MODAL (floating right) ══ -->
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-tag">KANBAN-007 · IN PROGRESS</div>
+        <div class="modal-title">Build Kanban Board with AI Agents</div>
+        <div class="modal-meta">
+          <span class="modal-pri-badge">🔴 Critical</span>
+          <div class="modal-assign">
+            <div class="avatar" style="background:linear-gradient(135deg,#7c3aed,#4f46e5);">T</div>
+            Teerawat
+          </div>
+          <div style="font-size:8px;color:rgba(255,255,255,0.25);margin-left:auto;">2 agents · 3 tags</div>
+        </div>
       </div>
-      <div class="ai-status-row">
-        <div class="ai-dot" style="background:#f59e0b;"></div>
-        <span class="ai-status-text">Researcher · Build Kanban Board</span>
-        <span class="ai-status-badge sb-thinking">Thinking</span>
+      <div class="modal-tabs">
+        <div class="tab active">Details</div>
+        <div class="tab">Agents</div>
+        <div class="tab">Chat</div>
       </div>
-      <div class="ai-status-row">
-        <div class="ai-dot" style="background:#3b82f6;"></div>
-        <span class="ai-status-text">Code Writer · AI Integration</span>
-        <span class="ai-status-badge sb-working">Working</span>
-      </div>
-      <div class="ai-status-row">
-        <div class="ai-dot" style="background:#10b981;"></div>
-        <span class="ai-status-text">Reviewer · Mobile Layout</span>
-        <span class="ai-status-badge sb-done">Done</span>
+      <div class="modal-body">
+        <div class="modal-section-label">Description</div>
+        <div class="modal-desc-box">
+          Implement a full drag-and-drop Kanban board with AI agent integration. Each card supports 5 AI agent types with real-time streaming status updates from Claude API.
+        </div>
+
+        <div class="modal-ai-btns">
+          <div class="ai-btn ai-btn-sum">✨ AI Rewrite</div>
+          <div class="ai-btn ai-btn-pri">🎯 Suggest Priority</div>
+        </div>
+
+        <div class="priority-box">
+          <div class="priority-box-row">
+            <span class="priority-box-label">🎯 AI Suggestion</span>
+            <span class="priority-box-badge">Critical</span>
+          </div>
+          <div class="priority-box-reason">This is a core feature blocking all other work — set to Critical immediately.</div>
+        </div>
+
+        <div class="modal-section-label">Tags</div>
+        <div class="modal-tags-row">
+          <span class="modal-tag-chip">frontend</span>
+          <span class="modal-tag-chip">AI</span>
+          <span class="modal-tag-chip">core-feature</span>
+          <span class="modal-tag-chip">Next.js</span>
+        </div>
       </div>
     </div>
-  </div>
+
+    <!-- ══ AGENTS PANEL (floating left) ══ -->
+    <div class="agents-popup">
+      <div class="ap-header">
+        🤖 AI Agents
+        <span style="font-size:7.5px;color:rgba(255,255,255,0.3);font-weight:500;">2 running</span>
+      </div>
+      <div class="ap-tab-row">
+        <div class="ap-tab active">Agents</div>
+        <div class="ap-tab">Add Agent</div>
+      </div>
+      <div class="ap-body">
+        <div class="agent-row">
+          <div class="agent-status-dot" style="background:#3b82f6;"></div>
+          <div class="agent-info">
+            <div class="agent-name">🔬 Researcher</div>
+            <div class="agent-sub">Compiling research findings…</div>
+          </div>
+          <div class="agent-badge ab-work">Working</div>
+        </div>
+        <div class="agent-row">
+          <div class="agent-status-dot" style="background:#f59e0b;"></div>
+          <div class="agent-info">
+            <div class="agent-name">👨‍💻 Code Writer</div>
+            <div class="agent-sub">Analyzing technical requirements…</div>
+          </div>
+          <div class="agent-badge ab-think">Thinking</div>
+        </div>
+        <div class="agent-row" style="border-color:rgba(16,185,129,0.2);background:rgba(16,185,129,0.04);">
+          <div class="agent-status-dot" style="background:#10b981;"></div>
+          <div class="agent-info">
+            <div class="agent-name">📝 Summarizer</div>
+            <div class="agent-sub">Completed</div>
+          </div>
+          <div class="agent-badge ab-done">Done</div>
+        </div>
+        <div class="agent-result">
+          <div class="agent-result-label">✅ Summarizer Result</div>
+          <div class="agent-result-text">Core Kanban feature with drag-and-drop, AI integration, and real-time streaming via Claude API. Priority: Critical.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ CHAT POPUP (floating bottom-right) ══ -->
+    <div class="chat-popup">
+      <div class="chat-header">
+        💬 AI Chat
+        <span style="font-size:7.5px;color:rgba(255,255,255,0.3);font-weight:500;margin-left:auto;">Context-aware</span>
+      </div>
+      <div class="chat-messages">
+        <div class="chat-msg-user">What are the main steps for this?</div>
+        <div class="chat-msg-ai">
+          For this Kanban board task:<br>
+          1. Setup DnD with @hello-pangea<br>
+          2. Add AI agent panel per card<br>
+          3. Stream Claude API responses<span class="chat-cursor"></span>
+        </div>
+      </div>
+      <div class="chat-input-row">
+        <div class="chat-input-fake">Ask about this task…</div>
+        <div class="chat-send">↑</div>
+      </div>
+    </div>
+
+  </div><!-- end right -->
 </div>
 </body>
 </html>
