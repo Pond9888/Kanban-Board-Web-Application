@@ -22,8 +22,8 @@
 
   /* ══ LEFT: TEXT ══ */
   .left {
-    width:300px; flex-shrink:0;
-    padding:44px 36px;
+    width:380px; flex-shrink:0;
+    padding:44px 40px;
     display:flex; flex-direction:column; justify-content:center; gap:16px;
   }
 
@@ -65,8 +65,17 @@
 
   /* ══ RIGHT: APP ══ */
   .right {
-    flex:1; padding:16px 16px 16px 8px;
+    flex:1; padding:0;
     display:flex; align-items:center; justify-content:center;
+    overflow:hidden;
+  }
+
+  .app-scale-wrap {
+    transform: scale(0.78);
+    transform-origin: center center;
+    width: 1160px;
+    height: 680px;
+    flex-shrink: 0;
   }
 
   .app-shell {
@@ -234,6 +243,7 @@
 
   <!-- ══ RIGHT APP ══ -->
   <div class="right">
+    <div class="app-scale-wrap">
     <div class="app-shell">
 
       <!-- sidebar -->
@@ -384,8 +394,9 @@
         </div>
       </div>
 
-    </div>
-  </div>
+    </div><!-- end app-shell -->
+    </div><!-- end app-scale-wrap -->
+  </div><!-- end right -->
 
 </div>
 </body>
