@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>Fiverr Slide 2 - Features</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1280px;
+    height: 720px;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #080810;
+    color: white;
+  }
+  .bg::before {
+    content: '';
+    position: fixed;
+    top: -200px; right: -200px;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(109,40,217,0.2) 0%, transparent 70%);
+  }
+  .bg::after {
+    content: '';
+    position: fixed;
+    bottom: -200px; left: 200px;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(16,185,129,0.1) 0%, transparent 70%);
+  }
+  .grid-overlay {
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+  .content {
+    position: relative;
+    z-index: 10;
+    padding: 56px 64px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+  .header {
+    text-align: center;
+    margin-bottom: 48px;
+  }
+  .eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #a78bfa;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .title {
+    font-size: 38px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+  }
+  .title span {
+    background: linear-gradient(135deg, #818cf8, #c084fc);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    flex: 1;
+  }
+
+  .feature-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 16px;
+    padding: 28px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    transition: all 0.2s;
+  }
+  .feature-card:hover {
+    border-color: rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.05);
+  }
+
+  .feat-icon-wrapper {
+    width: 48px; height: 48px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+  }
+
+  .feat-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: white;
+  }
+  .feat-desc {
+    font-size: 12px;
+    color: rgba(255,255,255,0.45);
+    line-height: 1.6;
+  }
+
+  .feat-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: auto;
+  }
+  .feat-tag {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 9px;
+    border-radius: 100px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.4);
+  }
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<div class="grid-overlay"></div>
+
+<div class="content">
+  <div class="header">
+    <div class="eyebrow">What You Get</div>
+    <div class="title">Everything You Need for <span>Modern Project Management</span></div>
+  </div>
+
+  <div class="features-grid">
+    <div class="feature-card" style="border-color:rgba(139,92,246,0.2);background:rgba(139,92,246,0.05);">
+      <div class="feat-icon-wrapper" style="background:rgba(139,92,246,0.15);border:1px solid rgba(139,92,246,0.25);">🤖</div>
+      <div class="feat-title">AI Agents per Card</div>
+      <div class="feat-desc">Assign 5 types of AI agents (Summarizer, Researcher, Coder, Reviewer, Tester) to each task. Watch them work in real-time with live status updates.</div>
+      <div class="feat-tags">
+        <span class="feat-tag">Thinking</span>
+        <span class="feat-tag">Working</span>
+        <span class="feat-tag">Done / Failed</span>
+      </div>
+    </div>
+
+    <div class="feature-card" style="border-color:rgba(59,130,246,0.2);background:rgba(59,130,246,0.05);">
+      <div class="feat-icon-wrapper" style="background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.25);">💬</div>
+      <div class="feat-title">Streaming AI Chat</div>
+      <div class="feat-desc">Every card has a built-in AI chatbot that understands the task context. Get instant, streaming responses without page reloads.</div>
+      <div class="feat-tags">
+        <span class="feat-tag">Claude AI</span>
+        <span class="feat-tag">Streaming</span>
+        <span class="feat-tag">Context-Aware</span>
+      </div>
+    </div>
+
+    <div class="feature-card" style="border-color:rgba(16,185,129,0.2);background:rgba(16,185,129,0.05);">
+      <div class="feat-icon-wrapper" style="background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.25);">✨</div>
+      <div class="feat-title">AI Summarize & Priority</div>
+      <div class="feat-desc">One-click AI rewrite of task descriptions. AI analyzes the task and suggests the right priority with a clear reasoning explanation.</div>
+      <div class="feat-tags">
+        <span class="feat-tag">Auto-Priority</span>
+        <span class="feat-tag">Rewrite</span>
+        <span class="feat-tag">One Click</span>
+      </div>
+    </div>
+
+    <div class="feature-card" style="border-color:rgba(245,158,11,0.2);background:rgba(245,158,11,0.05);">
+      <div class="feat-icon-wrapper" style="background:rgba(245,158,11,0.15);border:1px solid rgba(245,158,11,0.25);">📋</div>
+      <div class="feat-title">ERP-Style Navigation</div>
+      <div class="feat-desc">Full sidebar with Dashboard, Kanban Board, My Tasks, AI Agents, Analytics and more — all fully functional pages.</div>
+      <div class="feat-tags">
+        <span class="feat-tag">Dashboard</span>
+        <span class="feat-tag">Analytics</span>
+        <span class="feat-tag">5 Pages</span>
+      </div>
+    </div>
+
+    <div class="feature-card" style="border-color:rgba(236,72,153,0.2);background:rgba(236,72,153,0.05);">
+      <div class="feat-icon-wrapper" style="background:rgba(236,72,153,0.15);border:1px solid rgba(236,72,153,0.25);">🎨</div>
+      <div class="feat-title">Premium Dark UI</div>
+      <div class="feat-desc">Glassmorphism cards, gradient headers, animated badges, and smooth drag-and-drop. Inspired by Linear and Vercel's design.</div>
+      <div class="feat-tags">
+        <span class="feat-tag">Glassmorphism</span>
+        <span class="feat-tag">Drag & Drop</span>
+        <span class="feat-tag">Animated</span>
+      </div>
+    </div>
+
+    <div class="feature-card" style="border-color:rgba(14,165,233,0.2);background:rgba(14,165,233,0.05);">
+      <div class="feat-icon-wrapper" style="background:rgba(14,165,233,0.15);border:1px solid rgba(14,165,233,0.25);">🚀</div>
+      <div class="feat-title">Production-Ready Deploy</div>
+      <div class="feat-desc">Deployed to Vercel with Edge Runtime for fast AI responses. Full Next.js 14 App Router with TypeScript for type-safe, scalable code.</div>
+      <div class="feat-tags">
+        <span class="feat-tag">Vercel</span>
+        <span class="feat-tag">Edge Runtime</span>
+        <span class="feat-tag">Next.js 14</span>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
