@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { useBoardStore } from '@/lib/store'
+import { apiUrl } from '@/lib/apiUrl'
 
 interface Message {
   role: 'user' | 'assistant'
@@ -63,7 +64,7 @@ export default function AIChatPage() {
     setStreamingContent('')
 
     try {
-      const response = await fetch('/api/ai/board-chat', {
+      const response = await fetch(apiUrl('/api/ai/board-chat'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { Card } from './types'
+import { apiUrl } from './apiUrl'
 
 export type AutomationTrigger = 'card.created' | 'card.moved' | 'card.critical' | 'agent.done'
 
@@ -63,7 +64,7 @@ export const cardSummary = (card: Card) => ({
 
 export async function dispatchToWebhook(url: string, payload: object): Promise<{ ok: boolean; detail: string }> {
   try {
-    const res = await fetch('/api/automations/dispatch', {
+    const res = await fetch(apiUrl('/api/automations/dispatch'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ url, payload }),

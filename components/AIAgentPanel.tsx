@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { AIAgent, AIAgentType, Card } from '@/lib/types'
 import { AIStatusBadge } from './AIStatusBadge'
 import { useBoardStore } from '@/lib/store'
+import { apiUrl } from '@/lib/apiUrl'
 
 interface AIAgentPanelProps {
   card: Card
@@ -34,7 +35,7 @@ export function AIAgentPanel({ card }: AIAgentPanelProps) {
     updateAIAgent(card.id, agent.id, { status: 'thinking', statusMessage: 'Initializing...' })
 
     try {
-      const response = await fetch('/api/ai/agent', {
+      const response = await fetch(apiUrl('/api/ai/agent'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

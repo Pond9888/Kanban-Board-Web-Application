@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { Card, Priority } from '@/lib/types'
 import { useBoardStore } from '@/lib/store'
+import { apiUrl } from '@/lib/apiUrl'
 import { AIStatusBadge } from './AIStatusBadge'
 import { AIAgentPanel } from './AIAgentPanel'
 import { AIChat } from './AIChat'
@@ -52,7 +53,7 @@ export function CardModal({ cardId, onClose }: CardModalProps) {
   const handleSummarize = async () => {
     setIsSummarizing(true)
     try {
-      const res = await fetch('/api/ai/summarize', {
+      const res = await fetch(apiUrl('/api/ai/summarize'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ title: card.title, description: descVal }),
@@ -71,7 +72,7 @@ export function CardModal({ cardId, onClose }: CardModalProps) {
     setIsSuggestingPriority(true)
     setPriorityReason('')
     try {
-      const res = await fetch('/api/ai/priority', {
+      const res = await fetch(apiUrl('/api/ai/priority'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ title: card.title, description: descVal }),

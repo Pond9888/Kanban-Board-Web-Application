@@ -16,7 +16,17 @@ const config: Config = {
       animation: {
         'pulse-slow': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         'spin-slow': 'spin 2s linear infinite',
-      }
+        'slide-in-left': 'slide-in-left 0.25s cubic-bezier(0.4, 0, 0.2, 1) forwards',
+      },
+      keyframes: {
+        'slide-in-left': {
+          from: { transform: 'translateX(-100%)', opacity: '0' },
+          to:   { transform: 'translateX(0)',     opacity: '1' },
+        },
+      },
+      screens: {
+        xs: '380px',
+      },
     },
   },
   plugins: [],

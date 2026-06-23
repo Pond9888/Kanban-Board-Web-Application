@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { Card, ChatMessage } from '@/lib/types'
 import { useBoardStore } from '@/lib/store'
+import { apiUrl } from '@/lib/apiUrl'
 
 interface AIChatProps {
   card: Card
@@ -37,7 +38,7 @@ export function AIChat({ card }: AIChatProps) {
     const messages = [...card.chatHistory, userMessage].map(({ role, content }) => ({ role, content }))
 
     try {
-      const response = await fetch('/api/ai/chat', {
+      const response = await fetch(apiUrl('/api/ai/chat'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

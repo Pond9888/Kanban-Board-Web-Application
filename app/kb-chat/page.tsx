@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { useKBStore, KBEntry } from '@/lib/kbStore'
+import { apiUrl } from '@/lib/apiUrl'
 
 interface Message {
   role: 'user' | 'assistant'
@@ -90,7 +91,7 @@ function ChatPanel({ kb }: { kb: KBEntry[] }) {
     setLoading(true)
 
     try {
-      const res = await fetch('/api/ai/kb-chat', {
+      const res = await fetch(apiUrl('/api/ai/kb-chat'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

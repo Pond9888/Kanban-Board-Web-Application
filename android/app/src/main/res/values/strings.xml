@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Kanban AI</string>
+    <string name="title_activity_main">Kanban AI</string>
+    <string name="package_name">com.kanbanai.app</string>
+    <string name="custom_url_scheme">com.kanbanai.app</string>
+</resources>
