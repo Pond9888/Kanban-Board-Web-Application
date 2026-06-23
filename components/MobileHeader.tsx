@@ -2,6 +2,7 @@
 
 import { usePathname } from 'next/navigation'
 import { toggleMobileDrawer } from './Sidebar'
+import { UsageMeter } from './UsageMeter'
 
 const PAGE_TITLES: Record<string, string> = {
   '/': 'Dashboard',
@@ -45,11 +46,8 @@ export function MobileHeader() {
         <span className="text-sm font-semibold text-white truncate">{title}</span>
       </div>
 
-      {/* AI active indicator */}
-      <div className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-emerald-900/30 border border-emerald-500/20">
-        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-        <span className="text-[10px] text-emerald-400 font-medium">AI</span>
-      </div>
+      {/* Usage meter / Pro badge */}
+      <UsageMeter />
     </header>
   )
 }

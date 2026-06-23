@@ -4,6 +4,7 @@ import './globals.css'
 import { Sidebar } from '@/components/Sidebar'
 import { MobileHeader } from '@/components/MobileHeader'
 import { MobileBottomNav } from '@/components/MobileBottomNav'
+import { PurchasesInitializer } from '@/components/PurchasesInitializer'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -40,6 +41,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className={`${inter.className} bg-[#080810]`}>
+        <PurchasesInitializer />
         {/* Mobile header — visible only on small screens */}
         <MobileHeader />
 

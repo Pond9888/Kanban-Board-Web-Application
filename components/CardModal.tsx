@@ -4,9 +4,11 @@ import { useState, useEffect, useCallback } from 'react'
 import { Card, Priority } from '@/lib/types'
 import { useBoardStore } from '@/lib/store'
 import { apiUrl } from '@/lib/apiUrl'
+import { useAIGuard } from '@/lib/useAIGuard'
 import { AIStatusBadge } from './AIStatusBadge'
 import { AIAgentPanel } from './AIAgentPanel'
 import { AIChat } from './AIChat'
+import { PaywallModal } from './PaywallModal'
 
 interface CardModalProps {
   cardId: string
@@ -38,6 +40,7 @@ export function CardModal({ cardId, onClose }: CardModalProps) {
   const [isSummarizing, setIsSummarizing] = useState(false)
   const [isSuggestingPriority, setIsSuggestingPriority] = useState(false)
   const [priorityReason, setPriorityReason] = useState('')
+  const { guard, showPaywall, setShowPaywall } = useAIGuard()
 
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
     if (e.key === 'Escape') onClose()
@@ -51,6 +54,7 @@ export function CardModal({ cardId, onClose }: CardModalProps) {
   if (!card) return null
 
   const handleSummarize = async () => {
+    if (!guard()) return
     setIsSummarizing(true)
     try {
       const res = await fetch(apiUrl('/api/ai/summarize'), {
@@ -69,6 +73,7 @@ export function CardModal({ cardId, onClose }: CardModalProps) {
   }
 
   const handleSuggestPriority = async () => {
+    if (!guard()) return
     setIsSuggestingPriority(true)
     setPriorityReason('')
     try {
@@ -102,6 +107,7 @@ export function CardModal({ cardId, onClose }: CardModalProps) {
   const activeAgents = card.aiAgents.filter((a) => a.status === 'thinking' || a.status === 'working')
 
   return (
+    <>
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4"
       onClick={(e) => e.target === e.currentTarget && onClose()}
@@ -298,5 +304,7 @@ export function CardModal({ cardId, onClose }: CardModalProps) {
         </div>
       </div>
     </div>
+    {showPaywall && <PaywallModal reason="limit" onClose={() => setShowPaywall(false)} />}
+    </>
   )
 }

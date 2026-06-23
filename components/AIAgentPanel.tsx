@@ -5,6 +5,8 @@ import { AIAgent, AIAgentType, Card } from '@/lib/types'
 import { AIStatusBadge } from './AIStatusBadge'
 import { useBoardStore } from '@/lib/store'
 import { apiUrl } from '@/lib/apiUrl'
+import { useAIGuard } from '@/lib/useAIGuard'
+import { PaywallModal } from './PaywallModal'
 
 interface AIAgentPanelProps {
   card: Card
@@ -30,8 +32,10 @@ export function AIAgentPanel({ card }: AIAgentPanelProps) {
   const { addAIAgent, updateAIAgent, removeAIAgent } = useBoardStore()
   const [showPicker, setShowPicker] = useState(false)
   const [expandedAgent, setExpandedAgent] = useState<string | null>(null)
+  const { guard, showPaywall, setShowPaywall } = useAIGuard()
 
   const runAgent = async (agent: AIAgent) => {
+    if (!guard()) return
     updateAIAgent(card.id, agent.id, { status: 'thinking', statusMessage: 'Initializing...' })
 
     try {
@@ -87,6 +91,7 @@ export function AIAgentPanel({ card }: AIAgentPanelProps) {
   }
 
   return (
+    <>
     <div className="space-y-3">
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-semibold text-white/80 uppercase tracking-wider">AI Agents</h3>
@@ -192,5 +197,7 @@ export function AIAgentPanel({ card }: AIAgentPanelProps) {
         ))}
       </div>
     </div>
+    {showPaywall && <PaywallModal reason="limit" onClose={() => setShowPaywall(false)} />}
+    </>
   )
 }

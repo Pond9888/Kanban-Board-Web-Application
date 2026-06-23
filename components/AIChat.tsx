@@ -4,6 +4,8 @@ import { useState, useRef, useEffect } from 'react'
 import { Card, ChatMessage } from '@/lib/types'
 import { useBoardStore } from '@/lib/store'
 import { apiUrl } from '@/lib/apiUrl'
+import { useAIGuard } from '@/lib/useAIGuard'
+import { PaywallModal } from './PaywallModal'
 
 interface AIChatProps {
   card: Card
@@ -16,6 +18,7 @@ export function AIChat({ card }: AIChatProps) {
   const [streamingContent, setStreamingContent] = useState('')
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
+  const { guard, showPaywall, setShowPaywall } = useAIGuard()
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -23,6 +26,7 @@ export function AIChat({ card }: AIChatProps) {
 
   const sendMessage = async () => {
     if (!input.trim() || isStreaming) return
+    if (!guard()) return
 
     const userMessage: ChatMessage = {
       role: 'user',
@@ -89,6 +93,7 @@ export function AIChat({ card }: AIChatProps) {
   }
 
   return (
+    <>
     <div className="flex flex-col h-full">
       <div className="flex items-center gap-2 mb-4">
         <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-600 to-indigo-600 flex items-center justify-center">
@@ -172,5 +177,7 @@ export function AIChat({ card }: AIChatProps) {
         </button>
       </div>
     </div>
+    {showPaywall && <PaywallModal reason="limit" onClose={() => setShowPaywall(false)} />}
+    </>
   )
 }
