@@ -1,0 +1,90 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #050816;
+  --color-navy: #0A0F2E;
+  --color-surface: #0D1333;
+  --color-line: #2A2F52;
+  --color-violet: #6C63FF;
+  --color-cyan-a: #00D4FF;
+  --color-pink-a: #FF6B9D;
+  --color-muted: #8892B0;
+  --color-snow: #F0F0FF;
+}
+
+@theme inline {
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-fira);
+}
+
+:root {
+  --bg:      #050816;
+  --navy:    #0A0F2E;
+  --surface: #0D1333;
+  --border:  #2A2F52;
+  --violet:  #6C63FF;
+  --cyan:    #00D4FF;
+  --pink:    #FF6B9D;
+  --muted:   #8892B0;
+  --white:   #F0F0FF;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--white);
+  font-family: var(--font-sans, system-ui, sans-serif);
+  -webkit-font-smoothing: antialiased;
+}
+
+@keyframes floatY {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-14px); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+
+@keyframes scrollDown {
+  0%   { transform: translateY(0); opacity: 1; }
+  100% { transform: translateY(10px); opacity: 0; }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.reveal.on {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.bar-fill {
+  transition: width 1.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+  * {
+    animation-duration: 0.01ms !important;
+  }
+}
