@@ -15,6 +15,16 @@ export function AIChat({ card }: AIChatProps) {
   const [streamingContent, setStreamingContent] = useState('')
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
+  const workerRef = useRef<Worker | null>(null)
+
+  useEffect(() => {
+    workerRef.current = new Worker(new URL('../app/kb-chat/worker.ts', import.meta.url), {
+      type: 'module'
+    })
+    return () => {
+      workerRef.current?.terminate()
+    }
+  }, [])
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -36,6 +46,27 @@ export function AIChat({ card }: AIChatProps) {
 
     const messages = [...card.chatHistory, userMessage].map(({ role, content }) => ({ role, content }))
 
+    let queryEmbedding: number[] = []
+    if (workerRef.current) {
+      try {
+        queryEmbedding = await new Promise<number[]>((resolve, reject) => {
+          if (!workerRef.current) return reject('No worker')
+          const msgId = Date.now()
+          const handler = (e: MessageEvent) => {
+            if (e.data.id === msgId) {
+              workerRef.current?.removeEventListener('message', handler)
+              if (e.data.status === 'complete') resolve(e.data.output)
+              else reject(e.data.error)
+            }
+          }
+          workerRef.current.addEventListener('message', handler)
+          workerRef.current.postMessage({ id: msgId, text: userMessage.content })
+        })
+      } catch (e) {
+        console.error('Failed to generate embedding for card chat query', e)
+      }
+    }
+
     try {
       const response = await fetch('/api/ai/chat', {
         method: 'POST',
@@ -44,6 +75,7 @@ export function AIChat({ card }: AIChatProps) {
           messages,
           cardTitle: card.title,
           description: card.description,
+          queryEmbedding
         }),
       })
 

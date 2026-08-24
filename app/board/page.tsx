@@ -1,6 +1,7 @@
 'use client'
 
 import { Board } from '@/components/Board'
+import { CardMemoryTracker } from '@/components/CardMemoryTracker'
 import { useBoardStore } from '@/lib/store'
 
 export default function BoardPage() {
@@ -15,6 +16,7 @@ export default function BoardPage() {
 
   return (
     <main className="flex flex-col h-full overflow-hidden">
+      <CardMemoryTracker />
       {/* Background decoration */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-40 -right-40 w-96 h-96 rounded-full bg-violet-900/20 blur-3xl" />
