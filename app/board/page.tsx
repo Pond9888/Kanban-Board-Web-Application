@@ -1,6 +1,19 @@
+'use client'
+
 import { Board } from '@/components/Board'
+import { useBoardStore } from '@/lib/store'
 
 export default function BoardPage() {
+  const addCard = useBoardStore(state => state.addCard)
+  const setActiveCard = useBoardStore(state => state.setActiveCard)
+
+  const handleNewCard = () => {
+    const title = window.prompt("Enter new task name:")
+    if (title && title.trim()) {
+      addCard('todo', title)
+    }
+  }
+
   return (
     <main className="flex flex-col h-full overflow-hidden">
       {/* Background decoration */}
@@ -16,7 +29,10 @@ export default function BoardPage() {
           <p className="text-xs text-white/40">Drag cards • Click to open • AI agents run automatically</p>
         </div>
         <div className="flex items-center gap-3">
-          <button className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-indigo-600/20 hover:bg-indigo-600/30 border border-indigo-500/20 text-indigo-300 text-xs font-medium transition-colors">
+          <button 
+            onClick={handleNewCard}
+            className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-indigo-600/20 hover:bg-indigo-600/30 border border-indigo-500/20 text-indigo-300 text-xs font-medium transition-colors"
+          >
             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
             </svg>
