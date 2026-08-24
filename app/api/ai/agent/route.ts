@@ -1,12 +1,10 @@
-import Anthropic from '@anthropic-ai/sdk'
+import { GoogleGenerativeAI } from '@google/generative-ai'
 import { NextRequest } from 'next/server'
 
 export const runtime = 'edge'
 export const maxDuration = 60
 
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-})
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '')
 
 const agentPrompts: Record<string, { thinking: string; working: string; prompt: string }> = {
   summarizer: {
@@ -57,19 +55,11 @@ export async function POST(req: NextRequest) {
 
         sendLine(controller, encoder, { status: 'working', message: agentConfig.working })
 
-        const message = await anthropic.messages.create({
-          model: 'claude-haiku-4-5-20251001',
-          max_tokens: 1024,
-          messages: [
-            {
-              role: 'user',
-              content: `${agentConfig.prompt}\n\nTask: ${cardTitle}\nDescription: ${description || '(no description)'}`,
-            },
-          ],
-        })
-
-        const content = message.content[0]
-        const result = content.type === 'text' ? content.text : 'Task completed.'
+        const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' })
+        const promptText = `${agentConfig.prompt}\n\nTask: ${cardTitle}\nDescription: ${description || '(no description)'}`
+        
+        const resultResp = await model.generateContent(promptText)
+        const result = resultResp.response.text()
 
         sendLine(controller, encoder, { status: 'done', result })
         controller.close()

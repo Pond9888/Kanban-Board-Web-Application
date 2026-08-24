@@ -1,43 +1,47 @@
-import Anthropic from '@anthropic-ai/sdk'
+import { GoogleGenerativeAI } from '@google/generative-ai'
+import { NextRequest } from 'next/server'
 
 export const runtime = 'edge'
 export const maxDuration = 60
-import { NextRequest } from 'next/server'
 
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-})
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '')
 
 export async function POST(req: NextRequest) {
+
   const { messages, cardTitle, description } = await req.json()
+  
+  const systemPrompt = `You are an AI assistant helping with a task card titled "${cardTitle}". Context: ${description}. Be concise and helpful.`
+  const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash', systemInstruction: systemPrompt })
+  
+  const history = messages.slice(0, -1).map((msg: any) => ({
+    role: msg.role === 'assistant' ? 'model' : 'user',
+    parts: [{ text: msg.content }],
+  }))
+  const currentMessage = messages[messages.length - 1].content
 
-  const stream = await anthropic.messages.stream({
-    model: 'claude-haiku-4-5-20251001',
-    max_tokens: 1024,
-    system: `You are an AI assistant helping with a task card titled "${cardTitle}". Context: ${description}. Be concise and helpful.`,
-    messages,
-  })
-
-  const encoder = new TextEncoder()
-  const readable = new ReadableStream({
-    async start(controller) {
-      try {
-        for await (const event of stream) {
-          if (event.type === 'content_block_delta' && event.delta.type === 'text_delta') {
-            controller.enqueue(encoder.encode(event.delta.text))
+  try {
+    const chat = model.startChat({ history })
+    const result = await chat.sendMessageStream(currentMessage)
+    
+    const encoder = new TextEncoder()
+    const readable = new ReadableStream({
+      async start(controller) {
+        try {
+          for await (const chunk of result.stream) {
+            controller.enqueue(encoder.encode(chunk.text()))
           }
+          controller.close()
+        } catch (error) {
+          controller.error(error)
         }
-        controller.close()
-      } catch (error) {
-        controller.error(error)
-      }
-    },
-  })
+      },
+    })
 
-  return new Response(readable, {
-    headers: {
-      'Content-Type': 'text/plain; charset=utf-8',
-      'Transfer-Encoding': 'chunked',
-    },
-  })
+    return new Response(readable, {
+      headers: { 'Content-Type': 'text/plain; charset=utf-8', 'Transfer-Encoding': 'chunked' },
+    })
+  } catch (error: any) {
+    return new Response(`⚠️ AI error: ${error.message}`, { status: 500 })
+  }
+
 }

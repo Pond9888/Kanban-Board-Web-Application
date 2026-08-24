@@ -1,42 +1,36 @@
-import Anthropic from '@anthropic-ai/sdk'
+import { GoogleGenerativeAI } from '@google/generative-ai'
+import { NextRequest, NextResponse } from 'next/server'
 
 export const runtime = 'edge'
 export const maxDuration = 60
-import { NextRequest, NextResponse } from 'next/server'
 
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-})
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '')
 
 export async function POST(req: NextRequest) {
   const { title, description } = await req.json()
 
-  const message = await anthropic.messages.create({
-    model: 'claude-haiku-4-5-20251001',
-    max_tokens: 256,
-    messages: [
-      {
-        role: 'user',
-        content: `Analyze this task and suggest a priority level. Respond with ONLY valid JSON.
-
+  const promptText = `Analyze this task and determine its priority (Low, Medium, High, Urgent).
 Title: ${title}
-Description: ${description}
+Description: ${description || '(no description)'}
 
-Respond with exactly this JSON format:
-{"priority": "low"|"medium"|"high"|"critical", "reason": "brief explanation"}`,
-      },
-    ],
-  })
-
-  const content = message.content[0]
-  if (content.type !== 'text') {
-    return NextResponse.json({ error: 'Unexpected response' }, { status: 500 })
-  }
+Return ONLY a JSON object with this exact structure:
+{
+  "priority": "High",
+  "reasoning": "A short 1-sentence explanation"
+}`
 
   try {
-    const parsed = JSON.parse(content.text)
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' })
+    const resultResp = await model.generateContent(promptText)
+    const text = resultResp.response.text()
+    
+    // Gemini sometimes wraps JSON in markdown blocks
+    const jsonMatch = text.match(/\{[\s\S]*\}/)
+    const jsonString = jsonMatch ? jsonMatch[0] : text
+
+    const parsed = JSON.parse(jsonString)
     return NextResponse.json(parsed)
-  } catch {
-    return NextResponse.json({ error: 'Failed to parse response' }, { status: 500 })
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message }, { status: 500 })
   }
 }
