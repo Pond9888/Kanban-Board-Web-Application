@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
   const { messages, cardTitle, description } = await req.json()
   
   const systemPrompt = `You are an AI assistant helping with a task card titled "${cardTitle}". Context: ${description}. Be concise and helpful.`
-  const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash', systemInstruction: systemPrompt })
+  const model = genAI.getGenerativeModel({ model: 'gemini-3.7-flash', systemInstruction: systemPrompt })
   
   const history = messages.slice(0, -1).map((msg: any) => ({
     role: msg.role === 'assistant' ? 'model' : 'user',

@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
   const { cardTitle, description } = await req.json()
 
   try {
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' })
+    const model = genAI.getGenerativeModel({ model: 'gemini-3.7-flash' })
     const prompt = `Summarize this task into a concise 1-2 sentence description:
 
 Title: ${cardTitle}
