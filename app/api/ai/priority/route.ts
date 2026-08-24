@@ -20,7 +20,7 @@ Return ONLY a JSON object with this exact structure:
 }`
 
   try {
-    const model = genAI.getGenerativeModel({ model: 'gemini-3.7-flash' })
+    const model = genAI.getGenerativeModel({ model: 'gemini-3.5-flash' })
     const resultResp = await model.generateContent(promptText)
     const text = resultResp.response.text()
     

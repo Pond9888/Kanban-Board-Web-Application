@@ -55,7 +55,7 @@ export async function POST(req: NextRequest) {
 
         sendLine(controller, encoder, { status: 'working', message: agentConfig.working })
 
-        const model = genAI.getGenerativeModel({ model: 'gemini-3.7-flash' })
+        const model = genAI.getGenerativeModel({ model: 'gemini-3.5-flash' })
         const promptText = `${agentConfig.prompt}\n\nTask: ${cardTitle}\nDescription: ${description || '(no description)'}`
         
         const resultResp = await model.generateContent(promptText)
