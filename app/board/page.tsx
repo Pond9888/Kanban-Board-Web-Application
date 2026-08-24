@@ -5,7 +5,6 @@ import { useBoardStore } from '@/lib/store'
 
 export default function BoardPage() {
   const addCard = useBoardStore(state => state.addCard)
-  const setActiveCard = useBoardStore(state => state.setActiveCard)
 
   const handleNewCard = () => {
     const title = window.prompt("Enter new task name:")
