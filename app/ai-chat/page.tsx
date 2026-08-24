@@ -3,28 +3,42 @@
 import { useState, useEffect, useRef } from 'react'
 import { useBoardStore } from '@/lib/store'
 
-interface Message {
-  role: 'user' | 'assistant'
-  content: string
-}
-
 const SUGGESTIONS = [
-  'Summarize the board for me',
-  'Which tasks are critical or high priority?',
   'What should I work on next?',
-  'Are any AI agents still running?',
+  'Are there any high priority bugs?',
+  'Summarize the current progress',
 ]
 
 export default function AIChatPage() {
-  const { columns, cards } = useBoardStore()
-  const [messages, setMessages] = useState<Message[]>([])
+  const { cards, columns } = useBoardStore()
+  const [messages, setMessages] = useState<{ role: 'user' | 'assistant'; content: string }[]>([])
   const [input, setInput] = useState('')
   const [isStreaming, setIsStreaming] = useState(false)
   const [streamingContent, setStreamingContent] = useState('')
   const [mounted, setMounted] = useState(false)
   const bottomRef = useRef<HTMLDivElement>(null)
+  
+  const workerRef = useRef<Worker | null>(null)
+  const [modelReady, setModelReady] = useState(false)
 
-  useEffect(() => setMounted(true), [])
+  useEffect(() => {
+    setMounted(true)
+    
+    // Initialize Web Worker for local embeddings
+    workerRef.current = new Worker(new URL('../kb-chat/worker.ts', import.meta.url))
+    workerRef.current.onmessage = (e) => {
+      if (e.data.status === 'ready') {
+        setModelReady(true)
+      } else if (e.data.status === 'error') {
+        console.error('Worker Error:', e.data.error)
+      }
+    }
+    workerRef.current.postMessage({ type: 'init' })
+
+    return () => {
+      workerRef.current?.terminate()
+    }
+  }, [])
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -52,6 +66,33 @@ export default function AIChatPage() {
       })
       .join('\n\n')
 
+  const getEmbedding = (text: string): Promise<number[] | null> => {
+    return new Promise((resolve) => {
+      if (!workerRef.current || !modelReady) return resolve(null)
+      
+      const reqId = Date.now()
+      const messageHandler = (e: MessageEvent) => {
+        if (e.data.id === reqId) {
+          workerRef.current?.removeEventListener('message', messageHandler)
+          if (e.data.status === 'complete') {
+            resolve(e.data.embedding)
+          } else {
+            resolve(null)
+          }
+        }
+      }
+      
+      workerRef.current.addEventListener('message', messageHandler)
+      workerRef.current.postMessage({ type: 'embed', text, id: reqId })
+      
+      // Timeout after 5 seconds just in case
+      setTimeout(() => {
+        workerRef.current?.removeEventListener('message', messageHandler)
+        resolve(null)
+      }, 5000)
+    })
+  }
+
   const send = async (question?: string) => {
     const q = (question ?? input).trim()
     if (!q || isStreaming) return
@@ -63,12 +104,17 @@ export default function AIChatPage() {
     setStreamingContent('')
 
     try {
+      // 1. Generate local embedding for the user's query
+      const queryEmbedding = await getEmbedding(q)
+      
+      // 2. Send query + embedding + board state to server
       const response = await fetch('/api/ai/board-chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           messages: history.map(({ role, content }) => ({ role, content })),
           board: buildBoardSnapshot(),
+          queryEmbedding
         }),
       })
 
@@ -106,13 +152,19 @@ export default function AIChatPage() {
       <header className="relative z-10 border-b border-white/8 bg-black/10 backdrop-blur-md px-6 py-3 shrink-0 flex items-center justify-between gap-4">
         <div>
           <p className="text-[11px] text-white/30 mb-0.5">Project Management / AI Chat</p>
-          <h2 className="text-base font-bold text-white">AI Chat</h2>
+          <h2 className="text-base font-bold text-white">AI Chat with Knowledge Base</h2>
         </div>
         {mounted && (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[11px] font-medium">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            Board-aware · {totalCards} cards in context
-          </span>
+          <div className="flex gap-2">
+            <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-medium border ${modelReady ? 'bg-blue-500/10 border-blue-500/20 text-blue-400' : 'bg-white/5 border-white/10 text-white/40'}`}>
+              <span className={`w-1.5 h-1.5 rounded-full ${modelReady ? 'bg-blue-400 animate-pulse' : 'bg-white/20'}`} />
+              Knowledge Base: {modelReady ? 'Ready' : 'Loading Engine...'}
+            </span>
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[11px] font-medium">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              Board: {totalCards} cards
+            </span>
+          </div>
         )}
       </header>
 
@@ -126,9 +178,9 @@ export default function AIChatPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
                   </svg>
                 </div>
-                <h3 className="text-base font-bold text-white mb-1">Ask me about your board</h3>
-                <p className="text-xs text-white/40 mb-5 max-w-xs">
-                  I can see every column, card, priority, assignee and AI agent on your Kanban board right now.
+                <h3 className="text-base font-bold text-white mb-1">Ask me about your board or documents</h3>
+                <p className="text-xs text-white/40 mb-5 max-w-sm">
+                  I can see your Kanban board and answer questions based on the PDFs you uploaded to the Knowledge Base.
                 </p>
                 <div className="flex flex-wrap justify-center gap-2 max-w-md">
                   {SUGGESTIONS.map((s) => (
@@ -180,12 +232,12 @@ export default function AIChatPage() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && send()}
-              placeholder="Ask about your board, e.g. What should I work on next?"
+              placeholder={modelReady ? "Ask about your board or documents..." : "Loading AI Engine..."}
               className="flex-1 px-4 py-2.5 rounded-xl bg-white/[0.04] border border-white/10 text-sm text-white placeholder:text-white/25 focus:outline-none focus:border-indigo-500/50 transition-colors"
             />
             <button
               onClick={() => send()}
-              disabled={isStreaming || !input.trim()}
+              disabled={isStreaming || !input.trim() || !modelReady}
               className="px-5 rounded-xl text-sm font-semibold bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-lg shadow-indigo-900/40 disabled:opacity-30 disabled:shadow-none transition-all hover:opacity-90"
             >
               Send
