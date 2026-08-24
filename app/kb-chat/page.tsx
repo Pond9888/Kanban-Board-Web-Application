@@ -36,7 +36,7 @@ export default function KnowledgeBotPage() {
 
   useEffect(() => {
     // Initialize Web Worker
-    workerRef.current = new Worker('/worker.js')
+    workerRef.current = new Worker(new URL('./worker.ts', import.meta.url))
     workerRef.current.onmessage = (e) => {
       if (e.data.status === 'ready') {
         setModelReady(true)
