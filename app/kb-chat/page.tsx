@@ -1,40 +1,133 @@
 'use client'
 
-import { useState } from 'react'
-import { Sidebar } from '@/components/Sidebar'
+import { useState, useEffect, useRef } from 'react'
+
+function chunkText(text: string, maxChunkSize: number = 800): string[] {
+  const chunks: string[] = [];
+  const paragraphs = text.split(/\n\s*\n/);
+  
+  let currentChunk = '';
+  for (const paragraph of paragraphs) {
+    if (currentChunk.length + paragraph.length > maxChunkSize) {
+      if (currentChunk.length > 0) {
+        chunks.push(currentChunk.trim());
+        currentChunk = '';
+      }
+      if (paragraph.length > maxChunkSize) {
+        chunks.push(paragraph.trim());
+      } else {
+        currentChunk = paragraph;
+      }
+    } else {
+      currentChunk += (currentChunk ? '\n\n' : '') + paragraph;
+    }
+  }
+  if (currentChunk.trim().length > 0) {
+    chunks.push(currentChunk.trim());
+  }
+  return chunks;
+}
 
 export default function KnowledgeBotPage() {
   const [isUploading, setIsUploading] = useState(false)
   const [uploadStatus, setUploadStatus] = useState<string | null>(null)
+  const workerRef = useRef<Worker | null>(null)
+  const [modelReady, setModelReady] = useState(false)
+
+  useEffect(() => {
+    // Initialize Web Worker
+    workerRef.current = new Worker('/worker.js')
+    workerRef.current.onmessage = (e) => {
+      if (e.data.status === 'ready') {
+        setModelReady(true)
+      } else if (e.data.status === 'error') {
+        console.error('Worker Error:', e.data.error)
+      }
+    }
+    workerRef.current.postMessage({ type: 'init' })
+
+    return () => {
+      workerRef.current?.terminate()
+    }
+  }, [])
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
 
     setIsUploading(true)
-    setUploadStatus('Uploading and analyzing PDF...')
-
-    const formData = new FormData()
-    formData.append('file', file)
+    setUploadStatus('1/3 Extracting text from PDF...')
 
     try {
-      const res = await fetch('/api/knowledge/upload', {
+      // 1. Extract text via API
+      const formData = new FormData()
+      formData.append('file', file)
+      
+      const extractRes = await fetch('/api/knowledge/extract-text', {
         method: 'POST',
         body: formData,
       })
       
-      const text = await res.text()
-      let data
-      try {
-        data = JSON.parse(text)
-      } catch (e) {
-        throw new Error(`Server error (${res.status}): ${text.substring(0, 200)}`)
+      const extractData = await extractRes.json()
+      if (!extractRes.ok) throw new Error(`Extraction failed: ${extractData.error}`)
+      
+      const text = extractData.text
+      const chunks = chunkText(text)
+      const fileId = `pdf-${Date.now()}`
+      const fileName = file.name
+
+      setUploadStatus(`2/3 Generating AI memory for ${chunks.length} parts... (This happens in your browser and might take a minute)`)
+
+      // 2. Generate Embeddings using Web Worker
+      const records: any[] = []
+      let processed = 0
+
+      // We wrap the worker message in a Promise to process sequentially or in parallel
+      const getEmbedding = (chunk: string, index: number): Promise<number[]> => {
+        return new Promise((resolve, reject) => {
+          if (!workerRef.current) return reject('Worker not initialized')
+          
+          const messageHandler = (e: MessageEvent) => {
+            if (e.data.id === index) {
+              workerRef.current?.removeEventListener('message', messageHandler)
+              if (e.data.status === 'complete') {
+                resolve(e.data.embedding)
+              } else if (e.data.status === 'error') {
+                reject(e.data.error)
+              }
+            }
+          }
+          
+          workerRef.current.addEventListener('message', messageHandler)
+          workerRef.current.postMessage({ type: 'embed', text: chunk, id: index })
+        })
       }
 
-      if (!res.ok) {
-        throw new Error(`${data.error}\n\nStack:\n${data.stack || 'No stack trace'}`)
+      for (let i = 0; i < chunks.length; i++) {
+        setUploadStatus(`2/3 Thinking... Part ${i + 1} of ${chunks.length}`)
+        const embedding = await getEmbedding(chunks[i], i)
+        records.push({
+          source_type: 'pdf',
+          source_id: fileId,
+          title: fileName,
+          content: chunks[i],
+          embedding: embedding
+        })
       }
-      setUploadStatus('✅ ' + data.message)
+
+      setUploadStatus(`3/3 Saving ${chunks.length} parts to Supabase...`)
+
+      // 3. Save to Supabase
+      const saveRes = await fetch('/api/knowledge/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ records })
+      })
+      
+      const saveData = await saveRes.json()
+      if (!saveRes.ok) throw new Error(`Save failed: ${saveData.error}`)
+
+      setUploadStatus(`✅ Successfully saved ${fileName} to the AI brain!`)
     } catch (err: any) {
       setUploadStatus('❌ Error: ' + err.message)
     } finally {
@@ -57,27 +150,31 @@ export default function KnowledgeBotPage() {
           </div>
         </div>
 
-        <div className="border-2 border-dashed border-white/20 rounded-xl p-10 flex flex-col items-center justify-center hover:border-indigo-500/50 hover:bg-indigo-500/5 transition-all">
+        <div className={`border-2 border-dashed border-white/20 rounded-xl p-10 flex flex-col items-center justify-center transition-all ${modelReady && !isUploading ? 'hover:border-indigo-500/50 hover:bg-indigo-500/5 cursor-pointer' : 'opacity-50 cursor-not-allowed'}`}>
           <svg className="w-10 h-10 text-white/40 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
           </svg>
-          <p className="text-sm font-medium mb-1">Click to upload PDF</p>
+          <p className="text-sm font-medium mb-1">
+            {!modelReady ? 'Loading AI Engine in your browser...' : 'Click to upload PDF'}
+          </p>
           <p className="text-xs text-white/40 mb-4">Maximum file size: 10MB</p>
           
           <input 
             type="file" 
             accept=".pdf" 
             onChange={handleFileUpload} 
-            disabled={isUploading}
+            disabled={isUploading || !modelReady}
             className="hidden" 
             id="pdf-upload"
           />
-          <label 
-            htmlFor="pdf-upload" 
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer ${isUploading ? 'bg-indigo-600/50 text-indigo-300' : 'bg-indigo-600 hover:bg-indigo-500 text-white'}`}
-          >
-            {isUploading ? 'Processing...' : 'Select File'}
-          </label>
+          {modelReady && (
+            <label 
+              htmlFor="pdf-upload" 
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer ${isUploading ? 'bg-indigo-600/50 text-indigo-300' : 'bg-indigo-600 hover:bg-indigo-500 text-white'}`}
+            >
+              {isUploading ? 'Processing...' : 'Select File'}
+            </label>
+          )}
         </div>
 
         {uploadStatus && (
