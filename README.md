@@ -1,12 +1,15 @@
 # Kanban AI — AI-Powered Project Management
 
-> A modern Kanban board where AI agents work **alongside your team** in real-time.
+> A modern Kanban board where AI agents work **alongside your team** in real-time, backed by a robust Postgres database.
 
 🔗 **Live Demo:** [kanban-board-web-application.vercel.app](https://kanban-board-web-application.vercel.app)
 
 ---
 
 ## ✨ Features
+
+### 🗄️ Real-Time Database (Supabase)
+All cards, columns, chat messages, and AI Agent statuses are saved persistently to a **Supabase PostgreSQL** database. Any changes made on the board are instantly saved and synced, providing a true production-ready experience.
 
 ### 🤖 AI Agents per Card
 Assign AI agents to any task card. Each agent runs autonomously and reports back with live status:
@@ -39,8 +42,9 @@ Glassmorphism cards, gradient column headers, animated status badges, and smooth
 |---|---|
 | Framework | Next.js 14 (App Router) |
 | Language | TypeScript |
+| Database | **Supabase (PostgreSQL)** |
 | Styling | Tailwind CSS |
-| State | Zustand |
+| State | Zustand (Optimistic Updates) |
 | Drag & Drop | @hello-pangea/dnd |
 | AI | Claude API (claude-haiku-4-5) via Anthropic SDK |
 | Deployment | Vercel |
@@ -60,17 +64,27 @@ cd Kanban-Board-Web-Application
 npm install
 ```
 
-### 3. Set up environment
+### 3. Set up environment variables
+Create a `.env.local` file in the root directory:
 ```bash
 cp .env.local.example .env.local
 ```
-Edit `.env.local` and add your Anthropic API key:
-```
+Edit `.env.local` and add your API keys and Supabase credentials:
+```env
 ANTHROPIC_API_KEY=sk-ant-...
-```
-Get a key at [console.anthropic.com](https://console.anthropic.com)
 
-### 4. Run the dev server
+# Supabase Credentials
+NEXT_PUBLIC_SUPABASE_URL=https://<your-project-id>.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbG...
+```
+
+### 4. Set up the Database
+A SQL schema is provided to initialize your Supabase tables.
+1. Open your Supabase Dashboard -> SQL Editor
+2. Copy and run the contents of `supabase_schema.sql`
+3. Optional: Run `npx tsx --env-file=.env.local scripts/seed_supabase.ts` to inject dummy data into your database.
+
+### 5. Run the dev server
 ```bash
 npm run dev
 ```
@@ -88,10 +102,6 @@ app/
 ├── ai-agents/page.tsx    # AI Agents overview
 ├── analytics/page.tsx    # Analytics
 ├── api/ai/               # AI API routes (Edge Runtime)
-│   ├── chat/             # Streaming chat
-│   ├── agent/            # Agent task runner
-│   ├── summarize/        # Description summarizer
-│   └── priority/         # Priority suggester
 components/
 ├── Board.tsx             # Kanban board with DnD
 ├── Column.tsx            # Board column
@@ -102,17 +112,12 @@ components/
 ├── AIStatusBadge.tsx     # Animated status dot
 └── Sidebar.tsx           # ERP navigation sidebar
 lib/
-├── store.ts              # Zustand store
+├── store.ts              # Zustand store with Supabase integration
+├── supabase.ts           # Supabase client setup
 └── types.ts              # TypeScript types
+scripts/
+└── seed_supabase.ts      # Script to seed database with dummy data
 ```
-
----
-
-## 📸 Screenshots
-
-| Dashboard | Kanban Board | AI Agents |
-|---|---|---|
-| Live stats & activity | Drag-and-drop cards | Real-time agent status |
 
 ---
 
