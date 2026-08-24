@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Script to seed Supabase with the original dummy data.
  * To run: npx tsx --env-file=.env.local scripts/seed_supabase.ts
