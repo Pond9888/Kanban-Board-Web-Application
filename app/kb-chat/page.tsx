@@ -1,6 +1,12 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
+import * as pdfjsLib from 'pdfjs-dist'
+
+// Configure PDF.js worker
+if (typeof window !== 'undefined') {
+  pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`
+}
 
 function chunkText(text: string, maxChunkSize: number = 800): string[] {
   const chunks: string[] = [];
@@ -51,27 +57,36 @@ export default function KnowledgeBotPage() {
     }
   }, [])
 
+  const extractPdfText = async (file: File): Promise<string> => {
+    const arrayBuffer = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+    let fullText = '';
+    
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const page = await pdf.getPage(i);
+      const textContent = await page.getTextContent();
+      const pageText = textContent.items.map((item: any) => item.str).join(' ');
+      fullText += pageText + '\n\n';
+    }
+    
+    return fullText;
+  }
+
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
 
     setIsUploading(true)
-    setUploadStatus('1/3 Extracting text from PDF...')
+    setUploadStatus('1/3 Extracting text from PDF (in browser)...')
 
     try {
-      // 1. Extract text via API
-      const formData = new FormData()
-      formData.append('file', file)
+      // 1. Extract text purely on the client side
+      const text = await extractPdfText(file);
       
-      const extractRes = await fetch('/api/knowledge/extract-text', {
-        method: 'POST',
-        body: formData,
-      })
-      
-      const extractData = await extractRes.json()
-      if (!extractRes.ok) throw new Error(`Extraction failed: ${extractData.error}`)
-      
-      const text = extractData.text
+      if (!text || text.trim().length === 0) {
+        throw new Error("Could not extract any text from this PDF.")
+      }
+
       const chunks = chunkText(text)
       const fileId = `pdf-${Date.now()}`
       const fileName = file.name
@@ -80,9 +95,7 @@ export default function KnowledgeBotPage() {
 
       // 2. Generate Embeddings using Web Worker
       const records: any[] = []
-      let processed = 0
 
-      // We wrap the worker message in a Promise to process sequentially or in parallel
       const getEmbedding = (chunk: string, index: number): Promise<number[]> => {
         return new Promise((resolve, reject) => {
           if (!workerRef.current) return reject('Worker not initialized')
@@ -117,14 +130,22 @@ export default function KnowledgeBotPage() {
 
       setUploadStatus(`3/3 Saving ${chunks.length} parts to Supabase...`)
 
-      // 3. Save to Supabase
+      // 3. Save to Supabase via API Route
       const saveRes = await fetch('/api/knowledge/save', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ records })
       })
       
-      const saveData = await saveRes.json()
+      // Safe JSON parsing for Safari
+      const saveText = await saveRes.text()
+      let saveData
+      try {
+        saveData = JSON.parse(saveText)
+      } catch (e) {
+        throw new Error(`Server returned invalid JSON. Status: ${saveRes.status}. Text: ${saveText.substring(0, 200)}`)
+      }
+
       if (!saveRes.ok) throw new Error(`Save failed: ${saveData.error}`)
 
       setUploadStatus(`✅ Successfully saved ${fileName} to the AI brain!`)
