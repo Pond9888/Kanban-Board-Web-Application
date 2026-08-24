@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 import { generateEmbedding, chunkText } from '@/lib/embedding';
-import pdfParse from 'pdf-parse';
+const pdfParse = require('pdf-parse');
 
 export async function POST(request: Request) {
   try {
