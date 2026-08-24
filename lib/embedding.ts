@@ -1,4 +1,8 @@
-import { pipeline } from '@xenova/transformers';
+import { pipeline, env } from '@xenova/transformers';
+
+// Setup environment for serverless Next.js
+env.allowLocalModels = false;
+env.useFS = false;
 
 // We use a singleton pattern to ensure the model is loaded only once per server instance.
 class PipelineSingleton {
@@ -38,7 +42,6 @@ export function chunkText(text: string, maxChunkSize: number = 800): string[] {
         chunks.push(currentChunk.trim());
         currentChunk = '';
       }
-      // If a single paragraph is too large, just push it anyway (or we could split by sentence)
       if (paragraph.length > maxChunkSize) {
         chunks.push(paragraph.trim());
       } else {
