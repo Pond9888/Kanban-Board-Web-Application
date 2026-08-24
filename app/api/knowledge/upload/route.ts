@@ -56,6 +56,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: true, message: `Successfully processed ${fileName} into ${chunks.length} chunks.` });
   } catch (error: any) {
     console.error('Error processing upload:', error);
-    return NextResponse.json({ error: error.message || 'Internal Server Error' }, { status: 500 });
+    return NextResponse.json({ error: error.message || 'Internal Server Error', stack: error.stack }, { status: 500 });
   }
 }
