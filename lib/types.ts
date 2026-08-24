@@ -41,6 +41,7 @@ export interface Column {
 export interface BoardState {
   columns: Column[]
   cards: Record<string, Card>
+  fetchBoardData: () => Promise<void>
   addCard: (columnId: string, title: string) => void
   updateCard: (cardId: string, updates: Partial<Card>) => void
   deleteCard: (cardId: string) => void
