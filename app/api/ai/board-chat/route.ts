@@ -16,8 +16,8 @@ export async function POST(req: NextRequest) {
     try {
       const { data, error } = await supabase.rpc('match_knowledge', {
         query_embedding: queryEmbedding,
-        match_threshold: 0.3,
-        match_count: 5,
+        match_threshold: 0.1,
+        match_count: 40,
       })
 
       if (error) {
